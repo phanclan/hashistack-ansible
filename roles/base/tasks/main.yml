@@ -153,8 +153,8 @@
 - name: Base - Update /etc/resolv.conf
   replace:
     path: /etc/resolv.conf
-    regexp: 'nameserver 127.0.0.1'
-    replace: "nameserver 127.0.0.2"
+    regexp: "nameserver 127.0.0.*"
+    replace: "nameserver 127.0.0.1"
   tags:
     - base
 
