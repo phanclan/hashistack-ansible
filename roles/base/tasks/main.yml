@@ -37,6 +37,7 @@
   loop: "{{ base_apps_list }}"
   tags:
     - base
+
 - name: Add mappings to /etc/hosts
   become: yes
   blockinfile:
@@ -56,6 +57,7 @@
     - { name: client-b-1, ip: 192.168.64.30 }
   tags:
     - home
+
 - name: Configure dnsmasq to forward .consul requests to consul port 8600
   become: yes
   copy:
@@ -65,6 +67,23 @@
       # forward everything else to Google DNS
       server=127.0.0.53
       cache-size=0
+
+- name: Create HashiCups directories for Demo
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0777
+    # owner: "{{ item }}"
+    # group: "{{ item }}"
+  loop:
+    - /var/lib/postgresql/data
+    - /opt/nomad-volumes/grafana
+  tags:
+    - base
+
+
+
 
 # - name: Install prerequisites
 #   package:
