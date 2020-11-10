@@ -1,0 +1,35 @@
+[hashi_west]
+server-a-1
+server-a-2
+server-a-3
+
+[hashi_east]
+server-b-1
+server-b-2
+server-b-3
+
+[hashi_east:vars]
+region_letter=b
+
+[hashistack:children]
+#hashi_west
+hashi_east
+
+[vaultservers]
+server-b-1
+
+[nomadservers]
+server-b-1
+# server-b-2
+# server-b-3
+
+[consulservers]
+server-b-1
+# server-b-2
+# server-b-3
+
+[emergingservers]
+server-b-1
+server-b-2
+server-b-3
+# client-b-3
