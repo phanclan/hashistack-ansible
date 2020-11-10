@@ -29,7 +29,7 @@
 #   roles:
 #     - consul
 
-- hosts: hashiwest
+- hosts: hashi_west
   vars:
     region_letter: a
     nomad_ver: 1.0.0-beta2
