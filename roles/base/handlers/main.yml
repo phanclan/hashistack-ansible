@@ -2,3 +2,7 @@
   become: yes
   command: systemctl daemon-reload
   listen: systemd_reload
+
+- name: Restart service dnsmasq, in all cases
+  service: name=dnsmasq state=restarted
+  listen: dnsmasq_restart
