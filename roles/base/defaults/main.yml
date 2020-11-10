@@ -26,4 +26,7 @@ base_apps_list:
   - jq
   - tree
   - unzip
+  - dnsmasq-base
+  - dnsmasq
+  - postgresql-client
 docker_user: ubuntu

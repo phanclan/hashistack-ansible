@@ -56,8 +56,15 @@
     - { name: client-b-1, ip: 192.168.64.30 }
   tags:
     - home
-
-
+- name: Configure dnsmasq to forward .consul requests to consul port 8600
+  become: yes
+  copy:
+    dest: "/etc/dnsmasq.d/10-consul"
+    content: |
+      server=/consul/127.0.0.1#8600
+      # forward everything else to Google DNS
+      server=127.0.0.53
+      cache-size=0
 
 # - name: Install prerequisites
 #   package:
@@ -132,14 +139,25 @@
 #   tags:
 #     - consul
 
-# - name: Emerging - Enable and start consul service
-#   become: yes
-#   service:
-#     name: consul
-#     state: started
-#     enabled: yes
-#   tags:
-#     - consul
+- name: Base - Enable and start service
+  become: yes
+  service:
+    name: consul
+    state: started
+    enabled: yes
+  loop:
+    - dnsmasq
+  tags:
+    - base
+
+- name: Base - Update /etc/resolv.conf
+  replace:
+    path: /etc/resolv.conf
+    regexp: 'nameserver 127.0.0.1'
+    replace: "nameserver 127.0.0.2"
+  tags:
+    - base
+
 
 
 # - name: Emerging - Read license content

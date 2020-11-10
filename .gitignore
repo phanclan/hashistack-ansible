@@ -1,3 +1,5 @@
+# Sensitive files
+*.hclic
 # Local .terraform directories
 **/.terraform/*
 
