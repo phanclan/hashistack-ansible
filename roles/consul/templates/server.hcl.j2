@@ -3,8 +3,8 @@
 #==> Server
 server           = true
 bootstrap_expect = 3
-{% raw %}
-advertise_addr   = "{{ GetInterfaceIP \"enp0s2\" }}"
-{% endraw %}
+
+advertise_addr   = "{% raw %}{{ GetInterfaceIP \"{% endraw %}enp0s2{% raw %}\" }}{% endraw %}"
+
 client_addr      = "0.0.0.0"
 ui               = true

@@ -78,6 +78,7 @@
   notify: systemd_reload
   tags:
     - consul
+    - home
 
 - name: Consul - Create config files
   become: yes
