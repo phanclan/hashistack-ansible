@@ -36,7 +36,7 @@
     update_cache: true
   loop: "{{ base_apps_list }}"
   tags:
-  - base
+    - base
 - name: Add mappings to /etc/hosts
   become: yes
   blockinfile:
@@ -55,7 +55,7 @@
     - { name: server-b-3, ip: 192.168.64.29 }
     - { name: client-b-1, ip: 192.168.64.30 }
   tags:
-    - base
+    - home
 
 
 
