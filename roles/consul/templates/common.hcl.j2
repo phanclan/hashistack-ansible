@@ -4,11 +4,11 @@
 datacenter       = "West"
 #data_dir        = "/tmp/consul/server"
 data_dir         = "/opt/consul"
-{% raw %}
-advertise_addr   = "{{ GetInterfaceIP \"enp0s2\" }}"
-{% endraw %}
-enable_local_script_checks = true
+advertise_addr   = "{% raw %}{{ GetInterfaceIP \"{% endraw %}{{os_interface}}{% raw %}\" }}{% endraw %}"
 retry_join       = ["server-{{region_letter}}-1", "server-{{region_letter}}-2", "server-{{region_letter}}-3"]
+
+enable_local_script_checks = true
+
 #encrypt = "..."
 # ca_file = "/etc/consul.d/consul-agent-ca.pem"
 # cert_file = "/etc/consul.d/dc1-server-consul-0.pem"
