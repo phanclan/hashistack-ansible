@@ -2,10 +2,20 @@
 #   group: name="{{ nomad_group }}"
 #   become: true
 
+- name: Create nomad user
+  become: yes
+  user:
+    name="{{ item }}" system=yes shell="/sbin/nologin"
+    comment="nologin user" create_home="no" state=present
+  loop:
+    - "{{ nomad_user }}"
+  tags:
+    - nomad
+
 - name: Create Hashi directories
   become: yes
   file:
-    path: /opt/{{ item }}/data
+    path: /opt/{{ item }}
     state: directory
     mode: 0777
     owner: "{{ item }}"
@@ -26,18 +36,6 @@
     - /var/lib/postgresql/data
     - /opt/nomad-volumes/grafana
     - /opt/nomad/volumes/grafana
-  tags:
-    - nomad
-
-
-
-- name: Create nomad user
-  become: yes
-  user:
-    name="{{ item }}" system=yes shell="/sbin/nologin"
-    comment="nologin user" create_home="no" state=present
-  loop:
-    - "{{ nomad_user }}"
   tags:
     - nomad
 
@@ -75,6 +73,7 @@
     dest: /usr/bin/
   tags:
     - nomad-install
+    - home
 
 - name: Nomad - Enable autocompletion.
   shell: |
@@ -82,12 +81,6 @@
   ignore_errors: yes
   tags:
     - nomad-install
-
-# - name: "Set nomad binary capabilities"
-#   capabilities:
-#     path: /usr/local/bin/nomad
-#     capability: cap_ipc_lock+ep
-#     state: present
 
 - name: Create service file
   become: yes
@@ -102,8 +95,9 @@
   notify: systemd_reload
   tags:
     - nomad
+    - home
 
-- name: config file
+- name: Create config file
   become: yes
   template:
     src: "{{ item }}.hcl.j2"
@@ -117,7 +111,7 @@
   tags:
     - nomad
 
-- name: nomad service
+- name: Enable and start nomad service
   become: yes
   service:
     name: nomad
@@ -135,6 +129,7 @@
   # become: no
   tags:
     - nomad-license
+    - home
 
 - name: License nomad
   shell: |
@@ -146,3 +141,4 @@
     # VAULT_ADDR: "http://127.0.0.1:8200"
   tags:
     - nomad-license
+    - home

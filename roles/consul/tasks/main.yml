@@ -61,11 +61,12 @@
     - consul
     - home
 
-# - name: "Set consul binary capabilities"
-#   capabilities:
-#     path: /usr/local/bin/consul
-#     capability: cap_ipc_lock+ep
-#     state: present
+- name: Consul - Enable autocompletion.
+  shell: |
+    consul -autocomplete-install
+  ignore_errors: yes
+  tags:
+    - consul
 
 - name: Consul - Create service file
   become: yes
@@ -128,10 +129,3 @@
   tags:
     - consul-license
     - home
-
-- name: Consul - Enable autocompletion.
-  shell: |
-    consul -autocomplete-install
-  ignore_errors: yes
-  tags:
-    - consul

@@ -16,17 +16,19 @@ client {
     "/sbin"           = "/sbin"
     "/usr"            = "/usr"
   }
+
   options {
     docker.privileged.enabled = "true"
   }
-  # host_volume "pgdata" {
-  #   path      = "/var/lib/postgresql/data"
-  #   read_only = false
-  # }
-  # host_volume "grafana" {
-  #   path = "/opt/nomad-volumes/grafana"
-  # }
-}
+
+  host_volume "pgdata" {
+    path      = "/var/lib/postgresql/data"
+    read_only = false
+  }
+  host_volume "grafana" {
+    path = "/opt/nomad-volumes/grafana"
+  }
+} # End client block.
 
 plugin "raw_exec" {
   config {
