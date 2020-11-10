@@ -41,9 +41,9 @@
     root_token_dir_output: "/tmp/rootKey"
   roles:
     - base
+    - consul
     # - emerging
     # - nomad
-    # - consul
 
 # - hosts: emergingservers
 #   vars:

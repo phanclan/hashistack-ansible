@@ -14,6 +14,7 @@
     - consul
   tags:
     - consul
+
 - name: Consul - Create consul user
   become: yes
   user:
@@ -58,6 +59,7 @@
     dest: /usr/bin/
   tags:
     - consul
+    - home
 
 # - name: "Set consul binary capabilities"
 #   capabilities:
@@ -113,6 +115,7 @@
   # become: no
   tags:
     - consul-license
+    - home
 
 - name: Consul - License consul
   shell: |
@@ -124,6 +127,7 @@
     # CONSUL_HTTP_ADDR: "http://127.0.0.1:8500"
   tags:
     - consul-license
+    - home
 
 - name: Consul - Enable autocompletion.
   shell: |
