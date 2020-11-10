@@ -71,10 +71,10 @@
   tags:
     - base
 
-- name: Restart service dnsmasq, in all cases
-  service: name=dnsmasq state=restarted
-  tags:
-    - base
+# - name: Restart service dnsmasq, in all cases
+#   service: name=dnsmasq state=restarted
+#   tags:
+#     - base
 
 - name: Create HashiCups directories for Demo
   become: yes
