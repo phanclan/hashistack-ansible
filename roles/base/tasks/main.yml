@@ -37,6 +37,7 @@
   loop: "{{ base_apps_list }}"
   tags:
     - base
+    - home
 
 - name: Add mappings to /etc/hosts
   become: yes
