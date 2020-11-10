@@ -1,0 +1,148 @@
+# - name: Creating nomad user group
+#   group: name="{{ nomad_group }}"
+#   become: true
+
+- name: Create Hashi directories
+  become: yes
+  file:
+    path: /opt/{{ item }}/data
+    state: directory
+    mode: 0777
+    owner: "{{ item }}"
+    group: "{{ item }}"
+  loop:
+    - nomad
+  tags:
+    - nomad
+- name: Create HashiCups directories for Demo
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0777
+    # owner: "{{ item }}"
+    # group: "{{ item }}"
+  loop:
+    - /var/lib/postgresql/data
+    - /opt/nomad-volumes/grafana
+    - /opt/nomad/volumes/grafana
+  tags:
+    - nomad
+
+
+
+- name: Create nomad user
+  become: yes
+  user:
+    name="{{ item }}" system=yes shell="/sbin/nologin"
+    comment="nologin user" create_home="no" state=present
+  loop:
+    - "{{ nomad_user }}"
+  tags:
+    - nomad
+
+# - name: Install prerequisites
+#   package:
+#     name: "{{ item }}"
+#     update_cache: yes
+#   with_items: "{{ nomad_install_prerequisites }}"
+#   become: yes
+
+# - name: Download binary
+#   get_url:
+#     url: https://releases.hashicorp.com/nomad/{{nomad_version}}/nomad_{{nomad_version}}_linux_amd64.zip
+#     dest: /tmp/nomad_{{nomad_version}}_linux_amd64.zip
+#     owner: "{{ nomad_user }}"
+#     group: "{{ nomad_group }}"
+#     mode: 0755
+#     checksum: "{{nomad_checksum}}"
+#   register: nomad_download
+
+# - name: "Unzip nomad archive"
+#   unarchive:
+#     src: "{{ nomad_download.dest }}"
+#     dest: /usr/local/bin
+#     copy: no
+#     owner: "{{ nomad_user }}"
+#     group: "{{ nomad_group }}"
+#     mode: 0755
+
+- name: Unzip and install hashi nomad
+  become: yes
+  unarchive:
+    remote_src: yes
+    src: https://releases.hashicorp.com/nomad/{{nomad_ver}}+ent/nomad_{{nomad_ver}}+ent_linux_{{arch}}.zip
+    dest: /usr/bin/
+  tags:
+    - nomad-install
+
+- name: Nomad - Enable autocompletion.
+  shell: |
+    nomad -autocomplete-install
+  ignore_errors: yes
+  tags:
+    - nomad-install
+
+# - name: "Set nomad binary capabilities"
+#   capabilities:
+#     path: /usr/local/bin/nomad
+#     capability: cap_ipc_lock+ep
+#     state: present
+
+- name: Create service file
+  become: yes
+    # Ubuntu: service files are placesd here /lib/systemd/system/
+    # Ubuntu: symlinked to here when enabled /etc/systemd/system/multi-user.target.wants/
+  template:
+    src: init.service.j2
+    dest: /lib/systemd/system/nomad.service
+    # dest: /etc/systemd/system/nomad.service
+    # owner: root
+    # group: root
+  notify: systemd_reload
+  tags:
+    - nomad
+
+- name: config file
+  become: yes
+  template:
+    src: "{{ item }}.hcl.j2"
+    dest: "{{ nomad_config_path }}/{{ item }}.hcl"
+    owner: "{{ nomad_user }}"
+    group: "{{ nomad_group }}"
+  loop:
+    - client
+    - common
+    - server
+  tags:
+    - nomad
+
+- name: nomad service
+  become: yes
+  service:
+    name: nomad
+    state: started
+    enabled: yes
+  tags:
+    - nomad
+
+
+- name: Read license content
+  command: cat ./files/nomad.hclic
+  register: nomad_license
+  # with_fileglob: ./licenses/nomad.hclic
+  delegate_to: localhost
+  # become: no
+  tags:
+    - nomad-license
+
+- name: License nomad
+  shell: |
+    echo {{ lookup('file', 'nomad.hclic')}} | nomad license put -
+    echo {{ lookup('file', 'nomad.hclic')}} > deleteme.txt
+  run_once: true
+  environment:
+    # VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+    # VAULT_ADDR: "http://127.0.0.1:8200"
+  tags:
+    - nomad-license

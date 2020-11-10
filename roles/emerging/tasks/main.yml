@@ -1,0 +1,138 @@
+# - name: Creating consul user group
+#   group: name="{{ consul_group }}"
+#   become: true
+
+- name: Emerging - Create hashi users
+  become: yes
+  user:
+    name="{{ item }}" system=yes shell="/sbin/nologin"
+    comment="nologin user" create_home="no" state=present
+  loop:
+    - "{{ boundary_user }}"
+    - "{{ waypoint_user }}"
+  tags:
+    - emerging
+- name: Emerging - Create Hashi directories
+  become: yes
+  file:
+    path: /opt/{{ item }}
+    state: directory
+    mode: 0777
+    owner: "{{ item }}"
+    group: "{{ item }}"
+  loop:
+    - waypoint
+    - boundary
+  tags:
+    - emerging
+
+# - name: Install prerequisites
+#   package:
+#     name: "{{ item }}"
+#     update_cache: yes
+#   with_items: "{{ consul_install_prerequisites }}"
+#   become: yes
+
+# - name: Download binary
+#   get_url:
+#     url: https://releases.hashicorp.com/consul/{{consul_version}}/consul_{{consul_version}}_linux_amd64.zip
+#     dest: /tmp/consul_{{consul_version}}_linux_amd64.zip
+#     owner: "{{ consul_user }}"
+#     group: "{{ consul_group }}"
+#     mode: 0755
+#     checksum: "{{consul_checksum}}"
+#   register: consul_download
+
+# - name: "Unzip consul archive"
+#   unarchive:
+#     src: "{{ consul_download.dest }}"
+#     dest: /usr/local/bin
+#     copy: no
+#     owner: "{{ consul_user }}"
+#     group: "{{ consul_group }}"
+#     mode: 0755
+
+- name: Emerging - Unzip and install hashi consul
+  become: yes
+  unarchive:
+    remote_src: yes
+    src: https://releases.hashicorp.com/{{item.product}}/{{item.product_ver}}/{{item.product}}_{{item.product_ver}}_linux_{{arch}}.zip
+    # Note: there is no Enterprise version.
+    dest: /usr/bin/
+  loop:
+    - { product: waypoint, product_ver: "{{waypoint_ver}}" }
+    - { product: boundary, product_ver: "{{boundary_ver}}" }
+  tags:
+    - emerging
+
+# - name: "Set consul binary capabilities"
+#   capabilities:
+#     path: /usr/local/bin/consul
+#     capability: cap_ipc_lock+ep
+#     state: present
+
+# - name: Emerging - Create service file
+#   become: yes
+#     # Ubuntu: service files are placesd here /lib/systemd/system/
+#     # Ubuntu: symlinked to here when enabled /etc/systemd/system/multi-user.target.wants/
+#   template:
+#     src: init.service.j2
+#     dest: /lib/systemd/system/consul.service
+#     # dest: /etc/systemd/system/consul.service
+#     # owner: root
+#     # group: root
+#   notify: systemd_reload
+#   tags:
+#     - consul
+
+# - name: Emerging - Create config files
+#   become: yes
+#   template:
+#     src: "{{ item }}.hcl.j2"
+#     dest: "{{ consul_config_path }}/{{ item }}.hcl"
+#     owner: "{{ consul_user }}"
+#     group: "{{ consul_group }}"
+#   loop:
+#     # - client
+#     - common
+#     - server
+#   tags:
+#     - consul
+
+# - name: Emerging - Enable and start consul service
+#   become: yes
+#   service:
+#     name: consul
+#     state: started
+#     enabled: yes
+#   tags:
+#     - consul
+
+
+# - name: Emerging - Read license content
+#   command: cat ./files/consul.hclic
+#   register: consul_license
+#   # with_fileglob: ./licenses/consul.hclic
+#   delegate_to: localhost
+#   run_once: true
+#   # become: no
+#   tags:
+#     - consul-license
+
+# - name: Emerging - License consul
+#   shell: |
+#     echo {{ lookup('file', 'consul.hclic')}} | consul license put -
+#     echo {{ lookup('file', 'consul.hclic')}} > deleteme.txt
+#   run_once: true
+#   environment:
+#     # CONSUL_HTTP_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+#     # CONSUL_HTTP_ADDR: "http://127.0.0.1:8500"
+#   tags:
+#     - consul-license
+
+# - name: Emerging - Enable autocompletion.
+#   shell: |
+#     consul -autocomplete-install
+#   ignore_errors: yes
+#   tags:
+#     - consul

@@ -1,0 +1,36 @@
+- name: Reading unseal key contents
+  command: cat {{item}}
+  register: unseal_keys
+  with_fileglob: "{{ unseal_keys_dir_output }}/*"
+  delegate_to: localhost
+  become: no
+  tags:
+    - vault-unseal
+
+- name: Unseal vault with unseal keys
+  shell: |
+    vault operator unseal {{ item.stdout }}
+  environment:
+    VAULT_ADDR: "http://127.0.0.1:8200"
+  with_items: "{{unseal_keys.results}}"
+  tags:
+    - vault-unseal
+
+- name: Read license content
+  command: cat ./files/vault.hclic
+  register: vault_license
+  # with_fileglob: ./licenses/vault.hcl
+  delegate_to: localhost
+  # become: no
+  tags:
+    - vault-license
+
+- name: License vault
+  shell: |
+    vault write sys/license text={{ lookup('file', 'vault.hclic')}}
+    # echo {{ lookup('file', 'vault.hclic')}} > deleteme.txt
+  environment:
+    VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+    VAULT_ADDR: "http://127.0.0.1:8200"
+  tags:
+    - vault-license

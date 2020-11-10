@@ -1,0 +1,35 @@
+# Full configuration options can be found at https://www.nomadproject.io/docs/configuration
+# https://learn.hashicorp.com/tutorials/nomad/production-deployment-guide-vm-with-consul
+
+client {
+  enabled           = true
+  # network_interface = "ens4"
+  # servers           = ["192.168.50.101", "192.168.50.102", "192.168.50.103"]
+  #--> Will automatically use local Consul agent to discover other Nomad servers
+  chroot_env {
+    "/bin"            = "/bin"
+    "/etc"            = "/etc"
+    "/lib"            = "/lib"
+    "/lib32"          = "/lib32"
+    "/lib64"          = "/lib64"
+    "/run/resolvconf" = "/run/resolvconf"
+    "/sbin"           = "/sbin"
+    "/usr"            = "/usr"
+  }
+  options {
+    docker.privileged.enabled = "true"
+  }
+  # host_volume "pgdata" {
+  #   path      = "/var/lib/postgresql/data"
+  #   read_only = false
+  # }
+  # host_volume "grafana" {
+  #   path = "/opt/nomad-volumes/grafana"
+  # }
+}
+
+plugin "raw_exec" {
+  config {
+    enabled = true
+  }
+}

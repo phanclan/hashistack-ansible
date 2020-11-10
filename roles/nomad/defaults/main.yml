@@ -1,0 +1,7 @@
+---
+nomad_version: "0.11.1"
+nomad_checksum: "sha256:eb8d2461d0ca249c1f91005f878795998bdeafccfde0b9bae82343541ce65996"
+nomad_install_prerequisites: ['unzip']
+nomad_user: "nomad"
+nomad_group: "nomad"
+nomad_config_path: "/etc/nomad.d/"
