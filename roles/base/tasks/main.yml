@@ -67,6 +67,8 @@
       # forward everything else to Google DNS
       server=127.0.0.53
       cache-size=0
+  tags:
+    - base
 
 - name: Create HashiCups directories for Demo
   become: yes
