@@ -43,8 +43,8 @@
   roles:
     - base
     - consul
+    - nomad
     # - emerging
-    # - nomad
 
 # - hosts: emergingservers
 #   vars:
