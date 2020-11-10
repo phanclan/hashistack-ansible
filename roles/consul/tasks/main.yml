@@ -2,6 +2,16 @@
 #   group: name="{{ consul_group }}"
 #   become: true
 
+- name: Consul - Create consul user
+  become: yes
+  user:
+    name="{{ item }}" system=yes shell="/sbin/nologin"
+    comment="nologin user" create_home="no" state=present
+  loop:
+    - "{{ consul_user }}"
+  tags:
+    - consul
+
 - name: Consul - Create Hashi directories
   become: yes
   file:
@@ -12,16 +22,6 @@
     group: "{{ item }}"
   loop:
     - consul
-  tags:
-    - consul
-
-- name: Consul - Create consul user
-  become: yes
-  user:
-    name="{{ item }}" system=yes shell="/sbin/nologin"
-    comment="nologin user" create_home="no" state=present
-  loop:
-    - "{{ consul_user }}"
   tags:
     - consul
 
