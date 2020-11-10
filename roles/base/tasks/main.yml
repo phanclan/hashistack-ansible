@@ -67,6 +67,7 @@
       # forward everything else to Google DNS
       server=127.0.0.53
       cache-size=0
+  notify: systemd_reload
   tags:
     - base
 
