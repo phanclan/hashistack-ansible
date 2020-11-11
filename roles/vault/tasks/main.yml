@@ -2,6 +2,15 @@
 #   group: name="{{ vault_group }}"
 #   become: true
 
+- name: Creating vault user
+  become: yes
+  user:
+    name="{{ item }}" system=yes shell="/sbin/nologin"
+    comment="nologin user" create_home="no" state=present
+  loop:
+    - "{{ vault_user }}"
+  tags:
+    - vault
 - name: Create Hashi directories
   become: yes
   file:
@@ -12,15 +21,6 @@
     group: "{{ item }}"
   loop:
     - vault
-  tags:
-    - vault
-- name: Creating vault user
-  become: yes
-  user:
-    name="{{ item }}" system=yes shell="/sbin/nologin"
-    comment="nologin user" create_home="no" state=present
-  loop:
-    - "{{ vault_user }}"
   tags:
     - vault
 
@@ -54,10 +54,11 @@
   become: yes
   unarchive:
     remote_src: yes
-    src: https://releases.hashicorp.com/vault/{{vault_ver}}+ent/vault_{{vault_ver}}+ent_linux_{{arch}}.zip
+    src: https://releases.hashicorp.com/vault/{{vault_ver}}{{vault_ent}}/vault_{{vault_ver}}{{vault_ent}}_linux_{{arch}}.zip
     dest: /usr/bin/
   tags:
     - vault
+    - home
 
 # - name: "Set vault binary capabilities"
 #   capabilities:
@@ -65,7 +66,7 @@
 #     capability: cap_ipc_lock+ep
 #     state: present
 
-- name: Create service file
+- name: Vault - Create service file
   become: yes
     # Ubuntu: service files are placesd here /lib/systemd/system/
     # Ubuntu: symlinked to here when enabled /etc/systemd/system/multi-user.target.wants/
@@ -78,15 +79,17 @@
   notify: systemd_reload
   tags:
     - vault
+    - home
 
-- name: config file
+- name: Vault - Create config file
+  become: yes
   template:
     src: vault.hcl.j2
-    dest: "{{ vault_config_path }}"
+    dest: "{{ vault_config_path }}/vault.hcl"
     owner: "{{ vault_user }}"
     group: "{{ vault_group }}"
 
-- name: vault service
+- name: Vault - Enable and start vault service
   become: yes
   service:
     name: vault

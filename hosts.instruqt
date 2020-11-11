@@ -16,7 +16,7 @@ region_letter=b
 hashi_east
 
 [vaultservers]
-server-b-1
+server-a-1
 
 [nomadservers]
 server-b-1
