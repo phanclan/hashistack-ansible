@@ -7,7 +7,7 @@
     root_token_dir_output: "/tmp/rootKey"
   roles:
     - vault
-#     - vault-init
+    - vault-init
 #     - vault-unseal
 
 # - hosts: nomadservers
