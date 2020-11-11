@@ -125,3 +125,16 @@
   # notify: dnsmasq_restart
   tags:
     - vault
+
+- name: Vault - Run vault transform enablement script.
+  shell: /tmp/configure-vault.sh
+  # register: consul_license
+  # with_fileglob: ./licenses/consul.hclic
+  environment:
+    VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+    VAULT_ADDR: "http://127.0.0.1:8200"
+  delegate_to: localhost
+  run_once: true
+  # become: no
+  tags:
+    - consul-license
