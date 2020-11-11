@@ -8,7 +8,7 @@
   roles:
     - vault
     - vault-init
-#     - vault-unseal
+    - vault-unseal
 
 # - hosts: nomadservers
 #   vars:
@@ -63,3 +63,5 @@
 #     - consul
   # Use tags to control tasks to run. ex nomad-install.
 
+# echo 'export VAULT_TOKEN=$(cat /tmp/rootKey/rootkey)' >> ~/.bashrc
+# echo 'export VAULT_ADDR=http://127.0.0.1:8200' >> ~/.bashrc
