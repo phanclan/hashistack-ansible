@@ -104,7 +104,6 @@
   copy:
     dest: "/tmp/configure-vault.sh"
     content: |
-      vault
       # Enable the transform secrets engine
       vault secrets enable transform
 
@@ -137,4 +136,4 @@
   run_once: true
   # become: no
   tags:
-    - consul-license
+    - vault
