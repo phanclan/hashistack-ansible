@@ -55,10 +55,17 @@
       # Create a template defining the rules for value matching if not using the built-in template
 
       # Create a transformation to specify the nature of the data manipulation
-      vault write transform/transformations/fpe/card-number \
+      vault write transform/transformation/card-number \
+        type=fpe
         template="builtin/creditcardnumber" \
         tweak_source=internal \
         allowed_roles=payments
+
+      #vault list transform/transformation/
+      #vault read transform/transformation/card-number
+      #vault write transform/encode/payments value=1111-2222-3333-4444 > /tmp/transform-clear.txt
+      #vault write transform/encode/payments -format=json value=1111-2222-3333-4444 > /tmp/transform-clear.txt
+      #vault write transform/decode/payments value=$(jq -r .data.encoded_value /tmp/transform-clear.txt)
     mode: 0777
   # notify: dnsmasq_restart
   tags:
