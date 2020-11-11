@@ -24,6 +24,7 @@
   # become: no
   tags:
     - vault-license
+    - home
 
 - name: License vault
   shell: |
@@ -34,6 +35,7 @@
     VAULT_ADDR: "http://127.0.0.1:8200"
   tags:
     - vault-license
+    - home
 
 #==> Vault - Transform
 - name: Enable transform on Vault.
