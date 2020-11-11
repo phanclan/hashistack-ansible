@@ -97,3 +97,31 @@
     enabled: yes
   tags:
     - vault
+
+
+- name: Enable transform on Vault.
+  become: yes
+  copy:
+    dest: "/tmp/configure-vault.sh"
+    content: |
+      vault
+      # Enable the transform secrets engine
+      vault secrets enable transform
+
+      # Create a role containing the transformations that it can perform
+      vault write transform/role/payments transformations=card-number
+
+      # Create an alphabet defining a set of characters to use for format-preserving
+      # encryption (FPE) if not using the built-in alphabets.
+
+      # Create a template defining the rules for value matching if not using the built-in template
+
+      # Create a transformation to specify the nature of the data manipulation
+      vault write transform/transformations/fpe/card-number \
+        template="builtin/creditcardnumber" \
+        tweak_source=internal \
+        allowed_roles=payments
+    mode: 0777
+  # notify: dnsmasq_restart
+  tags:
+    - vault
