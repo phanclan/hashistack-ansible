@@ -97,7 +97,7 @@
     path: /root/.bashrc
     block: |
       export VAULT_TOKEN={{ lookup('file', '/tmp/rootKey/rootkey')}}
-      export VAULT_ADDR=http://127.0.0.1:8200'
+      export VAULT_ADDR=http://127.0.0.1:8200
   tags:
     - vault
     - instruqt
