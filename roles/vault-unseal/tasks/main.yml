@@ -72,15 +72,21 @@
     - vault
 
 - name: Vault - Run vault transform enablement script.
+  # become: no
   shell: /tmp/configure-vault.sh
-  # register: consul_license
-  # with_fileglob: ./licenses/consul.hclic
   environment:
     VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
     VAULT_ADDR: "http://127.0.0.1:8200"
   delegate_to: localhost
   run_once: true
-  # become: no
   tags:
     - vault
 
+- name: Vault - Configure vault token in application
+  replace:
+    path: /root/nomad_jobs/hashicups/hashicups_payment.nomad
+    regexp: "REPLACETOKEN"
+    replace: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+  tags:
+    - vault
+    - instruqt
