@@ -56,7 +56,7 @@
 
       # Create a transformation to specify the nature of the data manipulation
       vault write transform/transformation/card-number \
-        type=fpe
+        type=fpe \
         template="builtin/creditcardnumber" \
         tweak_source=internal \
         allowed_roles=payments
@@ -87,6 +87,7 @@
     path: /root/nomad_jobs/hashicups/hashicups_payment.nomad
     regexp: "REPLACETOKEN"
     replace: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+  run_once: true
   tags:
     - vault
     - instruqt
