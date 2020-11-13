@@ -91,3 +91,13 @@
   tags:
     - vault
     - instruqt
+
+- name: Vault - Add VAULT_ADDR and VAULT_TOKEN to instruqt. NOT for production.
+  blockinfile:
+    path: /root/.bashrc
+    block: |
+      export VAULT_TOKEN={{ lookup('file', '/tmp/rootKey/rootkey')}}
+      export VAULT_ADDR=http://127.0.0.1:8200'
+  tags:
+    - vault
+    - instruqt
