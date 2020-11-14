@@ -71,6 +71,15 @@
   tags:
     - vault
 
+- name: Register Vault Status
+  ansible.builtin.shell: systemctl vault status
+  register: vault_status
+  tags:
+    - vault
+- name: License Key Exists
+  ansible.builtin.command: ls 'tmp/rootKey/rootkey
+  register: key_exists
+
 - name: Vault - Run vault transform enablement script.
   # become: no
   shell: /tmp/configure-vault.sh
@@ -78,6 +87,7 @@
     VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
     VAULT_ADDR: "http://127.0.0.1:8200"
   delegate_to: localhost
+  when: vault_status.stdout.find('post-unseal setup complete') != -1 and key_exists.stdout != ""
   run_once: true
   tags:
     - vault
@@ -88,6 +98,7 @@
     regexp: "REPLACETOKEN"
     replace: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
   run_once: true
+  when: vault_status.stdout.find('post-unseal setup complete') != -1 and key_exists.stdout != ""
   tags:
     - vault
     - instruqt
