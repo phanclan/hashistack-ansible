@@ -80,7 +80,7 @@
 #   tags:
 #     - vault
 - name: License Key Exists
-  ansible.builtin.command: ls 'tmp/rootKey/rootkey
+  shell: ls 'tmp/rootKey/rootkey
   register: key_exists
   tags:
     - vault
