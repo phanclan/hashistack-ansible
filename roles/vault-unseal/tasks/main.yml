@@ -79,11 +79,11 @@
 #     VAULT_ADDR: "http://127.0.0.1:8200"
 #   tags:
 #     - vault
-- name: License Key Exists
-  shell: ls 'tmp/rootKey/rootkey
-  register: key_exists
-  tags:
-    - vault
+# - name: License Key Exists
+#   shell: ls 'tmp/rootKey/rootkey
+#   register: key_exists
+#   tags:
+#     - vault
 
 - name: Vault - Run vault transform enablement script.
   # become: no
@@ -93,7 +93,7 @@
     VAULT_ADDR: "http://127.0.0.1:8200"
   delegate_to: localhost
 #  when: vault_status.stdout.find('post-unseal setup complete') != -1 and key_exists.stdout != ""
-  when: key_exists.stdout != ""
+  # when: key_exists.stdout != ""
   run_once: true
   tags:
     - vault
