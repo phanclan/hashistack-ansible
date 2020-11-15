@@ -7,13 +7,13 @@ ui = true
 disable_mlock = true
 
 # Storage - File
-# storage "file" { path = "/opt/vault/data" }
+storage "file" { path = "/opt/vault/data" }
 
 # Storage - Integrated Storage
-storage "raft" {
-  path    = "/opt/vault/data"
-  node_id = "server-a-1"
-}
+#storage "raft" {
+#  path    = "/opt/vault/data"
+#  node_id = "server-a-1"
+#}
 
 # Storage - Consul
 #storage "consul" {

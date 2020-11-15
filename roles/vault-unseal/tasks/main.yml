@@ -71,6 +71,21 @@
   tags:
     - vault
 
+# - name: Register Vault Status
+#   ansible.builtin.shell: systemctl vault status
+#   register: vault_status
+#   environment:
+#     VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+#     VAULT_ADDR: "http://127.0.0.1:8200"
+#   tags:
+#     - vault
+
+# - name: License Key Exists
+#   shell: ls '/tmp/rootKey/rootkey'
+#   register: key_exists
+#   tags:
+#     - vault
+
 - name: Vault - Run vault transform enablement script.
   # become: no
   shell: /tmp/configure-vault.sh
@@ -78,19 +93,43 @@
     VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
     VAULT_ADDR: "http://127.0.0.1:8200"
   delegate_to: localhost
+#  when: vault_status.stdout.find('post-unseal setup complete') != -1 and key_exists.stdout != ""
+  # when: key_exists.stdout != ""
   run_once: true
   tags:
     - vault
 
-- name: Vault - Configure vault token in application
-  replace:
-    path: /root/nomad_jobs/hashicups/hashicups_payment.nomad
-    regexp: "REPLACETOKEN"
-    replace: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+- name: Find all of the Nomad Job files in this directory
+  find:
+    paths: "/root/nomad_jobs/hashicups/"
+    patterns: "*.nomad"
+  register: nomad_jobs
   run_once: true
   tags:
     - vault
     - instruqt
+
+- name: Insert Vault token into files
+  replace:
+    path: "{{ item.path }}"
+    regexp: "REPLACETOKEN"
+    replace: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+  with_items: "{{ nomad_jobs.files }}"
+  run_once: true
+  tags:
+    - vault
+    - instruqt
+
+# - name: Vault - Configure vault token in application
+#   replace:
+#     path: /root/nomad_jobs/hashicups/hashicups_payment.nomad
+#     regexp: "REPLACETOKEN"
+#     replace: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+#   run_once: true
+# #  when: vault_status.stdout.find('post-unseal setup complete') != -1 and key_exists.stdout != ""
+#   tags:
+#     - vault
+#     - instruqt
 
 - name: Vault - Add VAULT_ADDR and VAULT_TOKEN to instruqt. NOT for production.
   blockinfile:
