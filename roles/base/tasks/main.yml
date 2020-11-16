@@ -216,13 +216,11 @@
 #     - consul
 
 - name: HashiCups - Pull images
-  docker_image:
-    name: "{{item}}"
-  loop:
-    - hashicorpdemoapp/product-api-db:v0.0.12
-    - hashicorpdemoapp/product-api:v0.0.12
-    - hashicorpdemoapp/public-api:v0.0.2
-    - hashicorpdemoapp/frontend:v0.0.4
+  shell: |
+    docker pull hashicorpdemoapp/product-api-db:v0.0.12
+    docker pull hashicorpdemoapp/product-api:v0.0.12
+    docker pull hashicorpdemoapp/public-api:v0.0.2
+    docker pull hashicorpdemoapp/frontend:v0.0.4
   tags:
     - base
     - hashicups
