@@ -58,6 +58,28 @@
   tags:
     - home
 
+- name: Base - Update /etc/resolv.conf via resolvconf
+  # replace:
+  #   path: /etc/resolv.conf
+  #   regexp: "nameserver 127.0.0.*"
+  #   replace: "nameserver 127.0.0.1"
+  lineinfile:
+    path: /etc/resolvconf/resolv.conf.d/head
+    line: nameserver 127.0.0.1
+  tags:
+    - base
+
+- name: Base - Enable and start service
+  become: yes
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop:
+    - resolvconf
+  tags:
+    - base
+
 - name: Configure dnsmasq to forward .consul requests to consul port 8600
   become: yes
   copy:
@@ -165,28 +187,6 @@
 #     - server
 #   tags:
 #     - consul
-
-- name: Base - Update /etc/resolv.conf via resolvconf
-  # replace:
-  #   path: /etc/resolv.conf
-  #   regexp: "nameserver 127.0.0.*"
-  #   replace: "nameserver 127.0.0.1"
-  lineinfile:
-    path: /etc/resolvconf/resolv.conf.d/head
-    line: nameserver 127.0.0.1
-  tags:
-    - base
-
-- name: Base - Enable and start service
-  become: yes
-  service:
-    name: "{{ item }}"
-    state: started
-    enabled: yes
-  loop:
-    - resolvconf
-  tags:
-    - base
 
 
 # - name: Emerging - Read license content
