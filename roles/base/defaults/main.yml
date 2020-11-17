@@ -28,5 +28,6 @@ base_apps_list:
   - unzip
   - dnsmasq-base
   - dnsmasq
+  - resolvconf
   - postgresql-client
 docker_user: ubuntu
