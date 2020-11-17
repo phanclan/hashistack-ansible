@@ -1,0 +1,42 @@
+---
+- hosts: vaultservers
+  vars:
+    vault_ver: 1.5.5
+    arch: amd64 # arm64, amd64
+    unseal_keys_dir_output: "/tmp/unsealKey"
+    root_token_dir_output: "/tmp/rootKey"
+  pre_tasks:
+    - name: Vault - Register a variable
+      shell: vault status -format json | jq .sealed
+      register: vault_status
+      environment:
+        VAULT_ADDR: "http://localhost:8200"
+      # ignore_errors: yes
+      delegate_to: localhost
+      tags:
+        - instruqt
+
+    - name: Vault - Display vault status
+      debug:
+        msg: Vault status is "{{vault_status.stdout}}"
+      tags:
+        - instruqt
+
+    - name: Vault - Make sure vault is running and not sealed.
+    # - name: Restart service dnsmasq, in all cases
+      service: name=dnsmasq state=restarted
+      # shell: |
+      #   pkill vault
+      #   vault server -dev -dev-root-token-id=root \
+      #     -dev-listen-address=0.0.0.0:8200 2>&1 &
+      environment:
+        VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+        VAULT_ADDR: "http://127.0.0.1:8200"
+      when: vault_status.stdout != 'false' or vault_status.stdout == ""
+      tags:
+        - instruqt
+  roles:
+    # - vault
+    # - vault-init
+    - vault-unseal
+
