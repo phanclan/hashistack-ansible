@@ -143,6 +143,16 @@
     - nomad-license
     - home
 
+- name: HashiCups - Pull images
+  shell: |
+    docker pull hashicorpdemoapp/product-api-db:v0.0.12
+    docker pull hashicorpdemoapp/product-api:v0.0.12
+    docker pull hashicorpdemoapp/public-api:v0.0.2
+    docker pull hashicorpdemoapp/frontend:v0.0.4
+  tags:
+    - nomad
+    - hashicups
+
 - name: Nomad - DAS - Start prometheus and auto-scaler
   shell: |
     cd /root/nomad_jobs/hashicups
