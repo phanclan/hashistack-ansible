@@ -24,7 +24,7 @@
 
     - name: Vault - Make sure vault is running and not sealed.
     # - name: Restart service dnsmasq, in all cases
-      service: name=dnsmasq state=restarted
+      service: name=vault state=restarted
       # shell: |
       #   pkill vault
       #   vault server -dev -dev-root-token-id=root \
