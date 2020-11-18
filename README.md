@@ -25,17 +25,18 @@
 * `home` - used for home lab
 * `instruqt` - used for instruqt lab
 
-
 ## How to use
 * Clone repo and go into folder
-```
+```shell
 git clone https://github.com/phanclan/hashistack-ansible.git && \
 cd hashistack-ansible
 ```
+
+* Modify the hosts file. Play will reference hosts and groups to apply tasks.
 * Run the playbook
   * `-i` to specify your hosts and variables
   * `--skip-tags` - Skip tasks with these tags
   * `--tags` - Only run tasks with these tags
-```
+```shell
 ansible-playbook -i hosts.instruqt play-vault.yml --skip-tags home
 ```
