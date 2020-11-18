@@ -30,6 +30,7 @@ cd hashistack-ansible
 * Run the playbook
   * `-i` to specify your hosts and variables
   * `--skip-tags` - Skip tasks with these tags
-  * `--tags` - Only run tasks with these tags```
+  * `--tags` - Only run tasks with these tags
+```
 ansible-playbook -i hosts.instruqt play-vault.yml --skip-tags home
 ```
