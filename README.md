@@ -8,11 +8,16 @@
 ## Roles
 * base - Install pre-requisites missed by Packer
 * consul - Install Consul
+  * config files, service files, license
 * emerging - Dumping ground for new stuff like Waypoint and Boundary
 * nomad - Install Nomad
+  * config files, service files, license
+  * docker pull images for instruqt
 * vault - Install Vault
+  * config files, service files
 * vault-init - Intialize Vault
 * vault-unseal - Unseal and License Vault
+  * unseal and license
 
 ### Tags
 * I tagged certains tasks with `home` or `instruqt` or etc.
