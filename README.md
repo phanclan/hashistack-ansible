@@ -29,7 +29,7 @@
 * Clone repo and go into folder
 ```shell
 git clone https://github.com/phanclan/hashistack-ansible.git && \
-cd hashistack-ansible
+  cd hashistack-ansible
 ```
 
 * Modify the hosts file. Play will reference hosts and groups to apply tasks.
@@ -38,5 +38,5 @@ cd hashistack-ansible
   * `--skip-tags` - Skip tasks with these tags
   * `--tags` - Only run tasks with these tags
 ```shell
-ansible-playbook -i hosts.instruqt play-vault.yml --skip-tags home
+ansible-playbook -i hosts.instruqt play-hashi.yml --skip-tags home
 ```
