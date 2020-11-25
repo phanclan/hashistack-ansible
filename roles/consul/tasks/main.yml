@@ -12,10 +12,23 @@
   tags:
     - consul
 
-- name: Consul - Create Hashi directories
+- name: Consul - Create Hashi directory - data
   become: yes
   file:
     path: /opt/{{ item }}
+    state: directory
+    mode: 0777
+    owner: "{{ item }}"
+    group: "{{ item }}"
+  loop:
+    - consul
+  tags:
+    - consul
+
+- name: Consul - Create Hashi directory - configuration
+  become: yes
+  file:
+    path: /etc/{{ item }}.d
     state: directory
     mode: 0777
     owner: "{{ item }}"
@@ -51,6 +64,7 @@
 #     group: "{{ consul_group }}"
 #     mode: 0755
 
+#==> Install Software
 - name: Consul - Unzip and install hashi consul
   become: yes
   unarchive:
@@ -66,6 +80,14 @@
     consul -autocomplete-install
   ignore_errors: yes
   tags:
+    - consul
+
+- name: Enable autocompletion
+  ignore_errors: yes
+  lineinfile:
+    path: /home/{{user}}/.bashrc
+    line: complete -C /usr/bin/{{item}} {{item}}
+  loop:
     - consul
 
 - name: Consul - Create service file
@@ -108,12 +130,12 @@
 
 
 - name: Consul - Read license content
+  become: no
   command: cat ./files/consul.hclic
   register: consul_license
   # with_fileglob: ./licenses/consul.hclic
   delegate_to: localhost
   run_once: true
-  # become: no
   tags:
     - consul-license
     - home
@@ -129,3 +151,4 @@
   tags:
     - consul-license
     - home
+

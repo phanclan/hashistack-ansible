@@ -6,4 +6,5 @@ consul_user: "consul"
 consul_group: "consul"
 consul_config_path: "/etc/consul.d/"
 prefix: server
-user: vagrant
+keys_dir_output: "/tmp/consulkeys"
+cert_dir_output: "/tmp/consulcerts"

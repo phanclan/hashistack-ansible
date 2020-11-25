@@ -13,9 +13,18 @@ bind_addr = "0.0.0.0" # Default is 0.0.0.0
 #   rpc  = "{{ GetInterfaceIP `ens4` }}"
 #   serf = "{{ GetInterfaceIP `ens4` }}" #--> non-default ports may be specified
 # }
+advertise {
+  #--> Defaults to the first private IP address.
+  http = "{{ GetInterfaceIP `CHANGENIC` }}"
+  rpc  = "{{ GetInterfaceIP `CHANGENIC` }}"
+  serf = "{{ GetInterfaceIP `CHANGENIC` }}" #--> non-default ports may be specified
+}
 {% endraw %}
 
+# https://learn.hashicorp.com/tutorials/nomad/prometheus-metrics
 telemetry {
+  collection_interval        = "1s"
+  disable_hostname           = true
   publish_allocation_metrics = true
   publish_node_metrics       = true
   prometheus_metrics         = true

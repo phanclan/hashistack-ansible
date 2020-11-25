@@ -24,6 +24,7 @@
   * These items might only be relevant to those specific environments
 * `home` - used for home lab
 * `instruqt` - used for instruqt lab
+* `dns` - dns changes. newer versions of Ubuntu have system-resolv on port 53
 
 ## How to use
 * Clone repo and go into folder
@@ -40,3 +41,12 @@ git clone https://github.com/phanclan/hashistack-ansible.git && \
 ```shell
 ansible-playbook -i hosts.instruqt play-hashi.yml --skip-tags home
 ```
+
+Ex - Vagrant
+```
+ansible-playbook -i hosts play-hashistack.yml --skip-tags dns,hashicups
+```
+
+### Task Order Template
+bear://x-callback-url/open-note?id=E032F39B-21F9-40CE-BD0D-4877437C7F7A-64296-0006425DF95AEEE4&header=Task%20Order%20Template
+

@@ -3,7 +3,8 @@
 
 client {
   enabled           = true
-  # network_interface = "ens4"
+  network_interface = "{{os_interface}}"
+  # defaults to interface with default gw. For Vagrant it should enp0s8 vs enp0s3
   # servers           = ["192.168.50.101", "192.168.50.102", "192.168.50.103"]
   #--> Will automatically use local Consul agent to discover other Nomad servers
   chroot_env {

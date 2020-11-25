@@ -12,7 +12,7 @@
   tags:
     - nomad
 
-- name: Create Hashi directories
+- name: Create Hashi directory - configuration
   become: yes
   file:
     path: /opt/{{ item }}
@@ -24,6 +24,20 @@
     - nomad
   tags:
     - nomad
+
+- name: Nomad - Create Hashi directory - configuration
+  become: yes
+  file:
+    path: /etc/{{ item }}.d
+    state: directory
+    mode: 0777
+    owner: "{{ item }}"
+    group: "{{ item }}"
+  loop:
+    - nomad
+  tags:
+    - nomad
+
 - name: Create HashiCups directories for Demo
   become: yes
   file:
@@ -82,6 +96,14 @@
   tags:
     - nomad-install
 
+- name: Nomad - Enable autocompletion
+  ignore_errors: yes
+  lineinfile:
+    path: /home/{{user}}/.bashrc
+    line: complete -C /usr/bin/{{item}} {{item}}
+  loop:
+    - nomad
+
 - name: Create service file
   become: yes
     # Ubuntu: service files are placesd here /lib/systemd/system/
@@ -99,6 +121,7 @@
 
 - name: Create config file
   become: yes
+  throttle: 1
   template:
     src: "{{ item }}.hcl.j2"
     dest: "{{ nomad_config_path }}/{{ item }}.hcl"
@@ -108,8 +131,15 @@
     - client
     - common
     - server
+  notify: nomad_restart
   tags:
     - nomad
+
+- name: Replace CHANGENIC with user specified NIC
+  replace:
+    path: /etc/nomad.d/common.hcl
+    regexp: 'CHANGENIC'
+    replace: "{{ os_interface }}"
 
 - name: Enable and start nomad service
   become: yes
@@ -122,11 +152,11 @@
 
 
 - name: Read license content
+  become: no
   command: cat ./files/nomad.hclic
   register: nomad_license
   # with_fileglob: ./licenses/nomad.hclic
   delegate_to: localhost
-  # become: no
   tags:
     - nomad-license
     - home
@@ -167,4 +197,28 @@
   tags:
     - nomad-license
     - hashicups
+
+- name: Nomad - Git checkout
+  git:
+    repo: 'https://github.com/phanclan/nomad_jobs.git'
+    dest: /tmp/nomad_jobs
+    # version:
+  run_once: true
+  delegate_to: "{{prefix}}-a-1"
+  tags:
+    - nomad-license
+
+- name: Nomad - DAS - Start prometheus and auto-scaler
+  shell: |
+    cd /tmp/nomad_jobs/hashicups
+    nomad job run as-das-autoscaler.nomad
+    nomad job run as-prometheus.nomad
+  run_once: true
+  delegate_to: "{{prefix}}-a-1"
+  environment:
+    # VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+    # VAULT_ADDR: "http://127.0.0.1:8200"
+    NOMAD_ADDR: "http://127.0.0.1:4646"
+  tags:
+    - nomad-license
 

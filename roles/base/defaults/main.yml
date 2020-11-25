@@ -1,7 +1,16 @@
 ---
+base_apps_list:
+  - curl
+  - wget
+  - jq
+  - tree
+  - unzip
+  - dnsmasq-base
+  - dnsmasq
+  - resolvconf
+  - postgresql-client
 consul_version: "0.11.1"
 consul_checksum: "sha256:eb8d2461d0ca249c1f91005f878795998bdeafccfde0b9bae82343541ce65996"
-consul_install_prerequisites: ['unzip']
 boundary_user: "boundary"
 boundary_group: "boundary"
 waypoint_user: "waypoint"
@@ -20,14 +29,25 @@ hashi_dir:
   - consul
   - nomad
 arch: amd64 # arm64, amd64
-base_apps_list:
-  - curl
-  - wget
-  - jq
-  - tree
-  - unzip
-  - dnsmasq-base
-  - dnsmasq
-  - resolvconf
-  - postgresql-client
 docker_user: ubuntu
+host_file:
+  server-a-1:
+    ip: "192.168.17.101"
+  server-a-2:
+    ip: "192.168.17.102"
+  server-a-3:
+    ip: "192.168.17.103"
+  server-b-1:
+    ip: 192.168.64.28
+  server-b-2:
+    ip: 192.168.64.27
+  server-b-3:
+    ip: 192.168.64.29
+  client-b-1:
+    ip: 192.168.64.30
+  hashi-a-1:
+    ip: 172.16.1.101
+  hashi-a-2:
+    ip: 172.16.1.102
+  hashi-a-3:
+    ip: 172.16.1.103

@@ -2,3 +2,7 @@
   become: yes
   command: systemctl daemon-reload
   listen: systemd_reload
+
+- name: Restart service nomad
+  service: name=nomad state=restarted
+  listen: nomad_restart

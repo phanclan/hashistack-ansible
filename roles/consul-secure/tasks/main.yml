@@ -1,0 +1,108 @@
+#==> Security
+- name: Create directories - keys and certs
+  become: no
+  file:
+    path: "{{item}}"
+    state: directory
+  loop:
+    - "{{ keys_dir_output }}"
+    - "{{ cert_dir_output }}"
+  # delegate_to: hashi-a-1
+  # run_once: yes
+  tags:
+    - consul
+    - security
+    - home
+
+- name: Generate the gossip encryption key
+  shell: consul keygen
+  environment:
+    CONSUL_HTTP_ADDR: "http://127.0.0.1:8500"
+  register: consul_keygen_results
+  delegate_to: hashi-a-1
+  run_once: yes
+  ignore_errors: yes
+  tags:
+    - consul
+    - security
+    - home
+
+# - name: Write gossip encryption key to file
+#   copy:
+#     dest: "{{ keys_dir_output }}/consul_key"
+#     content: "{{ consul_keygen_results.stdout }}"
+#   delegate_to: hashi-a-1
+#   run_once: yes
+#   ignore_errors: yes
+#   tags:
+#     - consul
+#     - security
+#     - home
+
+- name: Create certificates - CA
+  shell: |
+    # Dir delete for testing
+    rm -rf /tmp/consulcerts/*
+    cd {{ cert_dir_output }}
+    consul tls ca create
+  loop:
+    - hashi-a-1
+  delegate_to: hashi-a-1
+  run_once: yes
+  environment:
+    CONSUL_HTTP_ADDR: "http://127.0.0.1:8500"
+  register: vault_init_results
+  ignore_errors: yes
+  tags:
+    - consul
+    - security
+    - home
+
+- name: Create certificates - servers and clients
+  shell: |
+    cd {{ cert_dir_output }}
+    consul tls cert create -server -dc "west"
+    consul tls cert create -client -dc "west"
+  loop:
+    - hashi-a-1
+    - hashi-a-2
+    - hashi-a-3
+  delegate_to: hashi-a-1
+  run_once: yes
+  environment:
+    CONSUL_HTTP_ADDR: "http://127.0.0.1:8500"
+  register: vault_init_results
+  ignore_errors: yes
+  tags:
+    - consul
+    - security
+    - home
+
+# - name: Distribute the certificates to agents
+
+
+- name: Configure Consul agents
+  become: yes
+  # replace:
+  #   path: /etc/resolv.conf
+  #   regexp: "nameserver 127.0.0.*"
+  #   replace: "nameserver 127.0.0.1"
+  lineinfile:
+    path: /etc/consul.d/secure.hcl
+    create: yes
+    regexp: '^encrypt ='
+    line: |
+      encrypt = "{{consul_keygen_results.stdout}}"
+  tags:
+    - consul
+    - security
+    - home
+
+- name: Restart consul service
+  become: yes
+  service:
+    name: consul
+    state: restarted
+    enabled: yes
+  tags:
+    - consul
