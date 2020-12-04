@@ -2,3 +2,7 @@
   become: yes
   command: systemctl daemon-reload
   listen: systemd_reload
+
+- name: Restart service consul
+  service: name=consul state=restarted
+  listen: consul_restart

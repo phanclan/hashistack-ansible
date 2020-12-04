@@ -1,3 +1,5 @@
-"telemetry": {
-  "prometheus_retention_time": "24h"
+telemetry {
+  disable_hostname = true
+  prometheus_retention_time = "24h"
+  # dogstatsd_addr = "localhost:8125"
 }

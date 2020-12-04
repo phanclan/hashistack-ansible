@@ -1,7 +1,3 @@
-# - name: Creating nomad user group
-#   group: name="{{ nomad_group }}"
-#   become: true
-
 - name: Create nomad user
   become: yes
   user:
@@ -12,7 +8,7 @@
   tags:
     - nomad
 
-- name: Create Hashi directory - configuration
+- name: Create Hashi directory - Data
   become: yes
   file:
     path: /opt/{{ item }}
@@ -25,7 +21,7 @@
   tags:
     - nomad
 
-- name: Nomad - Create Hashi directory - configuration
+- name: Create Hashi directory - configuration
   become: yes
   file:
     path: /etc/{{ item }}.d
@@ -60,25 +56,6 @@
 #   with_items: "{{ nomad_install_prerequisites }}"
 #   become: yes
 
-# - name: Download binary
-#   get_url:
-#     url: https://releases.hashicorp.com/nomad/{{nomad_version}}/nomad_{{nomad_version}}_linux_amd64.zip
-#     dest: /tmp/nomad_{{nomad_version}}_linux_amd64.zip
-#     owner: "{{ nomad_user }}"
-#     group: "{{ nomad_group }}"
-#     mode: 0755
-#     checksum: "{{nomad_checksum}}"
-#   register: nomad_download
-
-# - name: "Unzip nomad archive"
-#   unarchive:
-#     src: "{{ nomad_download.dest }}"
-#     dest: /usr/local/bin
-#     copy: no
-#     owner: "{{ nomad_user }}"
-#     group: "{{ nomad_group }}"
-#     mode: 0755
-
 - name: Unzip and install hashi nomad
   become: yes
   unarchive:
@@ -89,12 +66,12 @@
     - nomad-install
     - home
 
-- name: Nomad - Enable autocompletion.
-  shell: |
-    nomad -autocomplete-install
-  ignore_errors: yes
-  tags:
-    - nomad-install
+# - name: Nomad - Enable autocompletion.
+#   shell: |
+#     nomad -autocomplete-install
+#   ignore_errors: yes
+#   tags:
+#     - nomad-install
 
 - name: Nomad - Enable autocompletion
   ignore_errors: yes
@@ -143,13 +120,13 @@
 
 - name: Enable and start nomad service
   become: yes
+  throttle: 1
   service:
     name: nomad
-    state: started
+    state: restarted
     enabled: yes
   tags:
     - nomad
-
 
 - name: Read license content
   become: no
@@ -164,7 +141,6 @@
 - name: License nomad
   shell: |
     echo {{ lookup('file', 'nomad.hclic')}} | nomad license put -
-    echo {{ lookup('file', 'nomad.hclic')}} > deleteme.txt
   run_once: true
   environment:
     # VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
@@ -183,6 +159,13 @@
   tags:
     - nomad
     - hashicups
+
+- name: HashiCups - Pull HashiStackimages
+  shell: |
+    docker pull hashicorp/vault-enterprise:latest
+    docker pull hashicorp/consul-enterprise:latest
+  tags:
+    - nomad
 
 - name: Nomad - DAS - Start prometheus and auto-scaler
   shell: |

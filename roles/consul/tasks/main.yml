@@ -1,7 +1,4 @@
-# - name: Creating consul user group
-#   group: name="{{ consul_group }}"
-#   become: true
-
+#==> Start Consul
 - name: Consul - Create consul user
   become: yes
   user:
@@ -55,15 +52,6 @@
 #     checksum: "{{consul_checksum}}"
 #   register: consul_download
 
-# - name: "Unzip consul archive"
-#   unarchive:
-#     src: "{{ consul_download.dest }}"
-#     dest: /usr/local/bin
-#     copy: no
-#     owner: "{{ consul_user }}"
-#     group: "{{ consul_group }}"
-#     mode: 0755
-
 #==> Install Software
 - name: Consul - Unzip and install hashi consul
   become: yes
@@ -74,13 +62,6 @@
   tags:
     - consul
     - home
-
-- name: Consul - Enable autocompletion.
-  shell: |
-    consul -autocomplete-install
-  ignore_errors: yes
-  tags:
-    - consul
 
 - name: Enable autocompletion
   ignore_errors: yes
@@ -116,18 +97,20 @@
     # - client
     - common
     - server
+    - telemetry
+  # notify: consul_restart # does not work with loops
   tags:
     - consul
 
 - name: Consul - Enable and start consul service
   become: yes
+  throttle: 1
   service:
     name: consul
-    state: started
+    state: restarted
     enabled: yes
   tags:
     - consul
-
 
 - name: Consul - Read license content
   become: no
@@ -143,7 +126,6 @@
 - name: Consul - License consul
   shell: |
     echo {{ lookup('file', 'consul.hclic')}} | consul license put -
-    echo {{ lookup('file', 'consul.hclic')}} > deleteme.txt
   run_once: true
   environment:
     # CONSUL_HTTP_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
