@@ -21,17 +21,17 @@
   tags:
     - home
 
-- name: Base - Update /etc/resolv.conf via resolvconf
-  become: yes
-  # replace:
-  #   path: /etc/resolv.conf
-  #   regexp: "nameserver 127.0.0.*"
-  #   replace: "nameserver 127.0.0.1"
-  lineinfile:
-    path: /etc/resolvconf/resolv.conf.d/head
-    line: nameserver 127.0.0.1
-  tags:
-    - base
+# - name: Base - Update /etc/resolv.conf via resolvconf
+#   become: yes
+#   # replace:
+#   #   path: /etc/resolv.conf
+#   #   regexp: "nameserver 127.0.0.*"
+#   #   replace: "nameserver 127.0.0.1"
+#   lineinfile:
+#     path: /etc/resolvconf/resolv.conf.d/head
+#     line: nameserver 127.0.0.1
+#   tags:
+#     - base
 
 - name: Forward DNS to Consul for .consul. Update /etc/systemd/resolved.conf
   become: yes
@@ -41,6 +41,21 @@
       DNS=127.0.0.1
       Domains=~consul
 
+- name: use iptables to map port 53 to 8600
+  become: yes
+  iptables:
+    table: nat
+    chain: OUTPUT
+    protocol: {{item}}
+    match: {{item}}
+    destination_port: 53
+    jump: REDIRECT
+    to_ports: 53
+  loop:
+    - tcp
+    - udp
+  tags:
+    - base
 - name: Base - Enable and start service
   become: yes
   service:
@@ -52,26 +67,26 @@
   tags:
     - base
 
-- name: Configure dnsmasq to forward .consul requests to consul port 8600
-  become: yes
-  copy:
-    dest: "/etc/dnsmasq.d/10-consul"
-    content: |
-      server=/consul/127.0.0.1#8600
-      # Forward everything else to Google DNS
-      server=127.0.0.53
-      cache-size=0
-  notify: dnsmasq_restart
-  tags:
-    - base
+# - name: Configure dnsmasq to forward .consul requests to consul port 8600
+#   become: yes
+#   copy:
+#     dest: "/etc/dnsmasq.d/10-consul"
+#     content: |
+#       server=/consul/127.0.0.1#8600
+#       # Forward everything else to Google DNS
+#       server=127.0.0.53
+#       cache-size=0
+#   notify: dnsmasq_restart
+#   tags:
+#     - base
 
-- name: Restart service dnsmasq, in all cases
-  become: yes
-  service: name=dnsmasq state=restarted
-  ignore_errors: yes
-  tags:
-    - base
-    - dns
+# - name: Restart service dnsmasq, in all cases
+#   become: yes
+#   service: name=dnsmasq state=restarted
+#   ignore_errors: yes
+#   tags:
+#     - base
+#     - dns
 
 - name: Create HashiCups directories for Demo
   become: yes
