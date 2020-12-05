@@ -113,9 +113,9 @@
     src: https://releases.hashicorp.com/consul/{{item}}+ent/consul_{{item}}+ent_linux_{{arch}}.zip
     dest: /usr/bin/
   loop:
-    - {{consul_ver}}
-    - {{nomad_ver}}
-    - {{vault_ver}}
+    - "{{consul_ver}}"
+    - "{{nomad_ver}}"
+    - "{{vault_ver}}"
   tags:
     - base
 
