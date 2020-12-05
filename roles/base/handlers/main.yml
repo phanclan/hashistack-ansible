@@ -6,3 +6,7 @@
 - name: Restart service dnsmasq, in all cases
   service: name=dnsmasq state=restarted
   listen: dnsmasq_restart
+
+- name: Restart service systemd-resolved
+  service: name=systemd-resolved state=restarted
+  listen: systemd-resolved

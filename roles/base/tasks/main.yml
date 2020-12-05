@@ -40,6 +40,7 @@
     block: |
       DNS=127.0.0.1
       Domains=~consul
+  notify: systemd-resolved_restart
 
 - name: use iptables to map port 53 to 8600
   become: yes
