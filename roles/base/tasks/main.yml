@@ -33,6 +33,14 @@
   tags:
     - base
 
+- name: Forward DNS to Consul for .consul. Update /etc/systemd/resolved.conf
+  become: yes
+  blockinfile:
+    path: /etc/systemd/resolved.conf
+    block: |
+      DNS=127.0.0.1
+      Domains=~consul
+
 - name: Base - Enable and start service
   become: yes
   service:
