@@ -9,4 +9,4 @@
 
 - name: Restart service systemd-resolved
   service: name=systemd-resolved state=restarted
-  listen: systemd-resolved
+  listen: systemd-resolved_restart
