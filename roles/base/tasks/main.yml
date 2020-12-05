@@ -46,8 +46,8 @@
   iptables:
     table: nat
     chain: OUTPUT
-    protocol: {{item}}
-    match: {{item}}
+    protocol: "{{item}}"
+    match: "{{item}}"
     destination_port: 53
     jump: REDIRECT
     to_ports: 53
