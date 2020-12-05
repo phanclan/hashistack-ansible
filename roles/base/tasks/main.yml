@@ -106,16 +106,30 @@
     - base
 
 #==> Install HashiStack Binaries - Specific roles configure further.
-- name: Consul - Unzip and install hashi consul
+- name: Unzip and install hashi consul
   become: yes
   unarchive:
     remote_src: yes
-    src: https://releases.hashicorp.com/consul/{{item}}+ent/consul_{{item}}+ent_linux_{{arch}}.zip
+    src: https://releases.hashicorp.com/consul/{{consul_ver}}+ent/consul_{{consul_ver}}+ent_linux_{{arch}}.zip
     dest: /usr/bin/
-  loop:
-    - "{{consul_ver}}"
-    - "{{nomad_ver}}"
-    - "{{vault_ver}}"
+  tags:
+    - base
+
+- name: Unzip and install hashi nomad
+  become: yes
+  unarchive:
+    remote_src: yes
+    src: https://releases.hashicorp.com/nomad/{{nomad_ver}}+ent/nomad_{{nomad_ver}}+ent_linux_{{arch}}.zip
+    dest: /usr/bin/
+  tags:
+    - base
+
+- name: Unzip and install hashi vault
+  become: yes
+  unarchive:
+    remote_src: yes
+    src: https://releases.hashicorp.com/vault/{{vault_ver}}+ent/vault_{{vault_ver}}+ent_linux_{{arch}}.zip
+    dest: /usr/bin/
   tags:
     - base
 
