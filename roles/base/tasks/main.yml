@@ -46,16 +46,18 @@
   iptables:
     table: nat
     chain: OUTPUT
+    destination: localhost
     protocol: "{{item}}"
     match: "{{item}}"
-    destination_port: 53
+    destination_port: "53"
     jump: REDIRECT
-    to_ports: 53
+    to_ports: "8600"
   loop:
     - tcp
     - udp
   tags:
     - base
+
 - name: Base - Enable and start service
   become: yes
   service:
