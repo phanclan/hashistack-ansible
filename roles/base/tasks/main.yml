@@ -104,3 +104,29 @@
     - /opt/nomad-volumes/grafana
   tags:
     - base
+
+#==> Install HashiStack Binaries - Specific roles configure further.
+- name: Consul - Unzip and install hashi consul
+  become: yes
+  unarchive:
+    remote_src: yes
+    src: https://releases.hashicorp.com/consul/{{item}}+ent/consul_{{item}}+ent_linux_{{arch}}.zip
+    dest: /usr/bin/
+  loop:
+    - {{consul_ver}}
+    - {{nomad_ver}}
+    - {{vault_ver}}
+  tags:
+    - base
+
+- name: Enable autocompletion
+  ignore_errors: yes
+  lineinfile:
+    path: /home/{{user}}/.bashrc
+    line: complete -C /usr/bin/{{item}} {{item}}
+  loop:
+    - consul
+    - nomad
+    - vault
+  tags:
+    - base
