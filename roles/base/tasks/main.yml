@@ -59,16 +59,16 @@
   tags:
     - base
 
-- name: Base - Enable and start service
-  become: yes
-  service:
-    name: "{{ item }}"
-    state: started
-    enabled: yes
-  loop:
-    - resolvconf
-  tags:
-    - base
+# - name: Base - Enable and start service
+#   become: yes
+#   service:
+#     name: "{{ item }}"
+#     state: started
+#     enabled: yes
+#   loop:
+#     - resolvconf
+#   tags:
+#     - base
 
 # - name: Configure dnsmasq to forward .consul requests to consul port 8600
 #   become: yes
