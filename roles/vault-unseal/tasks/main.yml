@@ -1,7 +1,7 @@
 - name: Reading unseal key contents
   command: cat {{item}}
   register: unseal_keys
-  with_fileglob: "{{ unseal_keys_dir_output }}/*"
+  with_fileglob: "{{ unseal_keys_dir_output }}/{{inventory_hostname}}/*"
   delegate_to: localhost
   become: no
   tags:
@@ -17,6 +17,7 @@
     - vault-unseal
 
 - name: Read license content
+  become: no
   command: cat ./files/vault.hclic
   register: vault_license
   # with_fileglob: ./licenses/vault.hcl
@@ -28,10 +29,11 @@
 
 - name: License vault
   shell: |
+    sleep 10
     vault write sys/license text={{ lookup('file', 'vault.hclic')}}
     # echo {{ lookup('file', 'vault.hclic')}} > deleteme.txt
   environment:
-    VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+    VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey//{{inventory_hostname}}/rootkey')}}"
     VAULT_ADDR: "http://127.0.0.1:8200"
   tags:
     - vault-license
@@ -39,7 +41,7 @@
 
 #==> Vault - Transform
 - name: Enable transform on Vault.
-  become: yes
+  become: no
   copy:
     dest: "/tmp/configure-vault.sh"
     content: |
@@ -87,7 +89,7 @@
 #     - vault
 
 - name: Vault - Run vault transform enablement script.
-  # become: no
+  become: no
   shell: /tmp/configure-vault.sh
   environment:
     VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"

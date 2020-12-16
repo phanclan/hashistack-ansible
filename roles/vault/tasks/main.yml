@@ -11,10 +11,24 @@
     - "{{ vault_user }}"
   tags:
     - vault
-- name: Create Hashi directories
+
+- name: Create Hashi directories - data
   become: yes
   file:
     path: /opt/{{ item }}/data
+    state: directory
+    mode: 0777
+    owner: "{{ item }}"
+    group: "{{ item }}"
+  loop:
+    - vault
+  tags:
+    - vault
+
+- name: Create Hashi directories - configuration
+  become: yes
+  file:
+    path: /etc/{{ item }}.d
     state: directory
     mode: 0777
     owner: "{{ item }}"
@@ -50,15 +64,15 @@
 #     group: "{{ vault_group }}"
 #     mode: 0755
 
-- name: Unzip and install hashi vault
-  become: yes
-  unarchive:
-    remote_src: yes
-    src: https://releases.hashicorp.com/vault/{{vault_ver}}{{vault_ent}}/vault_{{vault_ver}}{{vault_ent}}_linux_{{arch}}.zip
-    dest: /usr/bin/
-  tags:
-    - vault
-    - home
+# - name: Unzip and install hashi vault
+#   become: yes
+#   unarchive:
+#     remote_src: yes
+#     src: https://releases.hashicorp.com/vault/{{vault_ver}}{{vault_ent}}/vault_{{vault_ver}}{{vault_ent}}_linux_{{arch}}.zip
+#     dest: /usr/bin/
+#   tags:
+#     - vault
+#     - home
 
 # - name: "Set vault binary capabilities"
 #   capabilities:
@@ -72,7 +86,7 @@
     # Ubuntu: symlinked to here when enabled /etc/systemd/system/multi-user.target.wants/
   template:
     src: init.service.j2
-    dest: /lib/systemd/system/
+    dest: /lib/systemd/system/vault.service
     # dest: /etc/systemd/system/vault.service
     # owner: root
     # group: root
@@ -84,7 +98,7 @@
 - name: Vault - Create config file
   become: yes
   template:
-    src: vault.hcl.j2
+    src: "vault-{{vault_backend}}.hcl.j2"
     dest: "{{ vault_config_path }}/vault.hcl"
     owner: "{{ vault_user }}"
     group: "{{ vault_group }}"

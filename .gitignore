@@ -2,6 +2,8 @@
 *.hclic
 # Local .terraform directories
 **/.terraform/*
+# Misc files
+*.zip
 
 # .tfstate files
 *.tfstate

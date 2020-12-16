@@ -49,13 +49,6 @@
   tags:
     - nomad
 
-# - name: Install prerequisites
-#   package:
-#     name: "{{ item }}"
-#     update_cache: yes
-#   with_items: "{{ nomad_install_prerequisites }}"
-#   become: yes
-
 - name: Unzip and install hashi nomad
   become: yes
   unarchive:

@@ -1,0 +1,20 @@
+- name: Create vault batch token for DR Operations.
+  become: no
+  shell: vault token create -role=failover-handler -ttl=8h
+  environment:
+    VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+    VAULT_ADDR: "http://127.0.0.1:8200"
+  delegate_to: localhost
+#  when: vault_status.stdout.find('post-unseal setup complete') != -1 and key_exists.stdout != ""
+  # when: key_exists.stdout != ""
+  run_once: true
+  tags:
+    - vault
+
+
+vault read -format=json sys/replication/status
+
+
+
+
+
