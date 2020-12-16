@@ -6,7 +6,7 @@ arch: amd64 # arm64, amd64
 #==> Common
 nomad_ver: 1.0.0
 consul_ver: 1.8.5
-vault_ver: 1.6.0
+vault_ver: 1.6.1
 waypoint_ver: 0.1.4
 boundary_ver: 0.1.1
 unseal_keys_dir_output: "/tmp/unsealKey"

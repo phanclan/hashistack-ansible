@@ -160,19 +160,19 @@
   tags:
     - nomad
 
-- name: Nomad - DAS - Start prometheus and auto-scaler
-  shell: |
-    cd /root/nomad_jobs/hashicups
-    nomad job run as-das-autoscaler.nomad
-    nomad job run as-prometheus.nomad
-  run_once: true
-  environment:
-    # VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
-    # VAULT_ADDR: "http://127.0.0.1:8200"
-    NOMAD_ADDR: "http://127.0.0.1:4646"
-  tags:
-    - nomad-license
-    - hashicups
+# - name: Nomad - DAS - Start prometheus and auto-scaler
+#   shell: |
+#     cd /root/nomad_jobs/hashicups
+#     nomad job run as-das-autoscaler.nomad
+#     nomad job run as-prometheus.nomad
+#   run_once: true
+#   environment:
+#     # VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+#     # VAULT_ADDR: "http://127.0.0.1:8200"
+#     NOMAD_ADDR: "http://127.0.0.1:4646"
+#   tags:
+#     - nomad-license
+#     - hashicups
 
 - name: Nomad - Git checkout
   git:

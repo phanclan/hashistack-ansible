@@ -33,7 +33,7 @@
     vault write sys/license text={{ lookup('file', 'vault.hclic')}}
     # echo {{ lookup('file', 'vault.hclic')}} > deleteme.txt
   environment:
-    VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey//{{inventory_hostname}}/rootkey')}}"
+    VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/{{inventory_hostname}}/rootkey')}}"
     VAULT_ADDR: "http://127.0.0.1:8200"
   tags:
     - vault-license
@@ -92,7 +92,7 @@
   become: no
   shell: /tmp/configure-vault.sh
   environment:
-    VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+    VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/{{inventory_hostname}}/rootkey')}}"
     VAULT_ADDR: "http://127.0.0.1:8200"
   delegate_to: localhost
 #  when: vault_status.stdout.find('post-unseal setup complete') != -1 and key_exists.stdout != ""
@@ -115,7 +115,7 @@
   replace:
     path: "{{ item.path }}"
     regexp: "REPLACETOKEN"
-    replace: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+    replace: "{{ lookup('file', '/tmp/rootKey/{{inventory_hostname}}/rootkey')}}"
   with_items: "{{ nomad_jobs.files }}"
   run_once: true
   tags:
@@ -137,7 +137,7 @@
   blockinfile:
     path: /root/.bashrc
     block: |
-      export VAULT_TOKEN={{ lookup('file', '/tmp/rootKey/rootkey')}}
+      export VAULT_TOKEN={{ lookup('file', '/tmp/rootKey/{{inventory_hostname}}/rootkey')}}
       export VAULT_ADDR=http://127.0.0.1:8200
   tags:
     - vault
