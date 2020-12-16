@@ -1,0 +1,12 @@
+---
+#==> Configure Vault
+- hosts: hashi_west
+  become: yes
+  vars:
+    region_letter: a
+    vault_backend: raft # file or raft
+  roles:
+    - vault-destroy
+    - vault
+    - vault-init
+    - vault-unseal
