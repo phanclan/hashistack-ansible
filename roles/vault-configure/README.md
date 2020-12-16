@@ -23,7 +23,7 @@ The following is stored in your `.bashrc` or `.bash_profile`.
 # ==> Configure Variables and Functions
 
 ```shell
-cat << EOF >> $HOME/.bashrc2
+cat << 'EOF' >> $HOME/.bashrc && . $HOME/.bashrc
 export VAULT_PRIMARY_ADDR=http://server-a-1:8200
 export VAULT_SECONDARY_ADDR=http://server-a-2:8200
 export VAULT_TERTIARY_ADDR=http://server-a-3:8200
@@ -182,7 +182,7 @@ Here are the commands to see your root tokens.
 
 ```shell
 for i in {1..3}; do
-echo "hashi-a-${i}: $(cat /tmp/rootKey/hashi-a-${i}/rootKey)"
+echo "server-a-${i}: $(cat /tmp/rootKey/server-a-${i}/rootkey)"
 done
 ```
 
@@ -190,7 +190,7 @@ done
 ---
 ---
 
-## ==> FAILOVER TESTING - Demote Cluster A and Promote Cluster B
+## ==> FAILOVER - Demote Cluster A and Promote Cluster B
 
 Time to test failover. First, we demote Cluster A. Then, we promote Cluster B.
 
@@ -205,11 +205,11 @@ We will simulate Cluster A in the West region going down.
 vault_primary write -f /sys/replication/dr/primary/demote
 ```
 
-Check replication status on Cluster 1
+Check replication status on Cluster A
 
 ```shell
-echo "#--> Check replication status on Cluster 1"
-vault_primary read -format=json sys/replication/dr/status | jq
+echo "#--> Check replication status on Cluster A"
+vault_primary read -format=json sys/replication/dr/status | jq .data
 ```
 
 `mode` should be secondary. `state` should be idle.
@@ -240,7 +240,7 @@ Code: 400. Errors:
 To promote a secondary cluster, you need a DR Operation Token on the DR Cluster
 to perform any operations.
 
-Validate process hasn't started yet on secondary cluster.
+* Validate process hasn't started yet on secondary cluster. `started` should be `false`.
 
 ```shell
 echo "#--- Validate process hasn't started yet on secondary cluster"
@@ -265,21 +265,20 @@ echo "#--- Validate process has started"
 curl -s $VAULT_SECONDARY_ADDR/v1/sys/replication/dr/secondary/generate-operation-token/attempt | jq
 ```
 
-* Get Your ENCODED TOKEN that Will be Combined with OTP to Produce DR operation Token
-  * Provide UNSEAL SEAL Keys one at a time until you Get the ENCODED TOKEN at last attempt.
-  * The Encoded Token will Only be produced upon last UNSEAL Key entered
+* Get Your **ENCODED TOKEN** that will be combined with OTP to decode DR operation Token
+  * Provide **UNSEAL Keys** one at a time until you get the ENCODED TOKEN at last attempt.
+  * The Encoded Token will ONLY be produced upon last UNSEAL Key entered
 
 ```shell
 for i in {1..3}; do
-vault_secondary operator generate-root -dr-token \
-  -nonce=$NONCE \
-  $(cat /tmp/unsealKey/hashi-a-1/unseal_key_$i)
-done | grep -i encoded | awk '{print $3}' | read ENCODED_TOKEN
+vault_secondary operator generate-root -dr-token -nonce=$NONCE \
+  $(cat /tmp/unsealKey/server-a-1/unseal_key_$i)
+done | grep -i encoded | awk '{print $3}' > /tmp/encoded.txt
+ENCODED_TOKEN=$(cat /tmp/encoded.txt)
 echo ENCODED_TOKEN: $ENCODED_TOKEN
-#ENCODED_TOKEN=$(vault operator generate-root -dr-token -nonce=${NONCE} ${PRIMARY_UNSEAL_KEY} | grep -i encoded | awk '{print $3}' )
 ```
 
-- Decode the generated DR operation token (Encoded Token)
+4. Decode the generated DR operation token (Encoded Token)
 
 ```shell
 DR_OPERATION_TOKEN=$(vault_secondary operator generate-root -dr-token -otp=${DR_OTP} -decode=${ENCODED_TOKEN})
@@ -354,7 +353,8 @@ for i in {1..3}; do
 vault_primary operator generate-root -dr-token \
   -nonce=$NONCE \
   $(cat /tmp/unsealKey/hashi-a-1/unseal_key_$i)
-done | grep -i encoded | awk '{print $3}' | read ENCODED_TOKEN
+done | grep -i encoded | awk '{print $3}' > /tmp/encoded.txt
+ENCODED_TOKEN=$(cat /tmp/encoded.txt)
 echo ENCODED_TOKEN: $ENCODED_TOKEN
 #ENCODED_TOKEN=$(vault operator generate-root -dr-token -nonce=${NONCE} ${PRIMARY_UNSEAL_KEY} | grep -i encoded | awk '{print $3}' )
 ```

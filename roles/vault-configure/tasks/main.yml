@@ -1,8 +1,33 @@
 - name: Create vault batch token for DR Operations.
   become: no
-  shell: vault token create -role=failover-handler -ttl=8h
+  shell: |
+    echo "#==> Create some users, policies and secrets on the primary cluster.
+    These objects will be validated on the replicated clusters."
+
+    vault login $VAULT_TOKEN
+    vault auth enable userpass
+    echo '
+    path "*" {
+        capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+    }' | vault policy write vault-admin -
+
+    vault write auth/userpass/users/vault password=vault policies=vault-admin
+
+    echo "#==> Create a normal user and write some data"
+
+    vault login $VAULT_TOKEN
+    vault write auth/userpass/users/drtest password=drtest policies=user
+
+    echo '
+    path "supersecret/*" {
+      capabilities = ["list", "read"]
+    }' | vault policy write user -
+    vault secrets enable -path=supersecret generic
+    vault kv put supersecret/drtest username=harold password=baines
+
+  #vault token create -role=failover-handler -ttl=8h
   environment:
-    VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+    VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/{{inventory_hostname}}/rootkey')}}"
     VAULT_ADDR: "http://127.0.0.1:8200"
   delegate_to: localhost
 #  when: vault_status.stdout.find('post-unseal setup complete') != -1 and key_exists.stdout != ""
@@ -10,10 +35,6 @@
   run_once: true
   tags:
     - vault
-
-
-vault read -format=json sys/replication/status
-
 
 
 
