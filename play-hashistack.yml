@@ -5,7 +5,7 @@
     prefix: hashi
     region_letter: a
     os_interface: enp0s8 #enp0s2, Instruqt ens4, Vagrant enp0s8
-    nomad_ver: 1.0.0-beta3
+    nomad_ver: 1.0.0
     consul_ver: 1.8.5
     vault_ver: 1.6.0
     arch: amd64 # arm64, amd64

@@ -38,9 +38,16 @@ git clone https://github.com/phanclan/hashistack-ansible.git && \
   * `-i` to specify your hosts and variables
   * `--skip-tags` - Skip tasks with these tags
   * `--tags` - Only run tasks with these tags
+
+Example for instruqt.
+
 ```shell
-ansible-playbook -i hosts.instruqt play-hashi.yml --skip-tags home
+ansible-playbook -i hosts.instruqt play-hashi.yml --skip-tags home -e @vars-instruqt.yml
 ```
+
+- `vars-instruqt.yml` file specifies values specific for instruqt environment.
+- Same with `hosts.instruqt`.
+- We are skippings tasks tagged with `home`. These are not relevant to instruqt.
 
 Ex - Vagrant
 ```
