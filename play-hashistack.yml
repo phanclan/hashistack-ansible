@@ -2,37 +2,37 @@
 - hosts: hashi_west
   become: yes
   vars:
-    prefix: hashi
+    # prefix: hashi
     region_letter: a
-    os_interface: enp0s8 #enp0s2, Instruqt ens4, Vagrant enp0s8
-    nomad_ver: 1.0.0
-    consul_ver: 1.8.5
-    vault_ver: 1.6.0
-    arch: amd64 # arm64, amd64
-    unseal_keys_dir_output: "/tmp/unsealKey"
-    root_token_dir_output: "/tmp/rootKey"
-    user: ubuntu
+    # os_interface: enp0s8 #enp0s2, Instruqt ens4, Vagrant enp0s8
+    # nomad_ver: 1.0.0
+    # consul_ver: 1.8.5
+    # vault_ver: 1.6.0
+    # arch: amd64 # arm64, amd64
+    # unseal_keys_dir_output: "/tmp/unsealKey"
+    # root_token_dir_output: "/tmp/rootKey"
+    # user: ubuntu
   roles:
-    # - base
-    # - docker
-    # - consul
+    - base
+    - docker
+    - consul
     # - consul-secure
-    # - nomad
+    - nomad
     # - emerging
 
-# Configure Vault
+#==> Configure Vault
 - hosts: hashi_west
   become: yes
   vars:
-    prefix: hashi
+    # prefix: hashi
     region_letter: a
-    os_interface: enp0s8 #enp0s2, Instruqt ens4, Vagrant enp0s8
+    # os_interface: enp0s8 #enp0s2, Instruqt ens4, Vagrant enp0s8
     vault_backend: raft # file or raft
-    vault_ver: 1.6.0
-    arch: amd64 # arm64, amd64
-    unseal_keys_dir_output: "/tmp/unsealKey"
-    root_token_dir_output: "/tmp/rootKey"
-    user: ubuntu
+    # vault_ver: 1.6.0
+    # arch: amd64 # arm64, amd64
+    # unseal_keys_dir_output: "/tmp/unsealKey"
+    # root_token_dir_output: "/tmp/rootKey"
+    # user: ubuntu
   roles:
     - vault-destroy
     - vault
@@ -43,28 +43,18 @@
 # - hosts: monitoring
 #   become: yes
 #   vars:
-#     prefix: hashi
 #     region_letter: a
-#     arch: amd64 # arm64, amd64
   # roles:
   #   - monitoring
 
 # - hosts: nomadservers
 #   vars:
-#     nomad_ver: 1.0.0-beta2
-#     arch: amd64 # arm64, amd64
-#     unseal_keys_dir_output: "/tmp/unsealKey"
-#     root_token_dir_output: "/tmp/rootKey"
 #   roles:
 #     - nomad
 
 # - hosts: consulservers
 #   vars:
-#     consul_ver: 1.8.5
 #     region_letter: b
-#     arch: amd64 # arm64, amd64
-#     unseal_keys_dir_output: "/tmp/unsealKey"
-#     root_token_dir_output: "/tmp/rootKey"
 #   roles:
 #     - consul
 
@@ -72,13 +62,6 @@
 # - hosts: emergingservers
 #   vars:
 #     region_letter: b
-#     nomad_ver: 1.0.0-beta2
-#     consul_ver: 1.8.5
-#     waypoint_ver: 0.1.4
-#     boundary_ver: 0.1.1
-#     arch: amd64 # arm64, amd64
-#     unseal_keys_dir_output: "/tmp/unsealKey"
-#     root_token_dir_output: "/tmp/rootKey"
 #   roles:
 #     - base
 #     - emerging
