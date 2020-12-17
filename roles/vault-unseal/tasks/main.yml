@@ -10,6 +10,7 @@
 - name: Unseal vault with unseal keys
   shell: |
     vault operator unseal {{ item.stdout }}
+    sleep 10
   environment:
     VAULT_ADDR: "http://127.0.0.1:8200"
   with_items: "{{unseal_keys.results}}"
@@ -29,7 +30,6 @@
 
 - name: License vault
   shell: |
-    sleep 10
     vault write sys/license text={{ lookup('file', 'vault.hclic')}}
     # echo {{ lookup('file', 'vault.hclic')}} > deleteme.txt
   environment:
