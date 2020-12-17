@@ -265,9 +265,9 @@ echo "#--- Validate process has started"
 curl -s $VAULT_SECONDARY_ADDR/v1/sys/replication/dr/secondary/generate-operation-token/attempt | jq
 ```
 
-* Get Your **ENCODED TOKEN** that will be combined with OTP to decode DR operation Token
-  * Provide **UNSEAL Keys** one at a time until you get the ENCODED TOKEN at last attempt.
-  * The Encoded Token will ONLY be produced upon last UNSEAL Key entered
+4. Get Your **ENCODED TOKEN** that will be combined with OTP to decode DR operation Token
+    * Provide **UNSEAL Keys** one at a time until you get the ENCODED TOKEN at last attempt.
+    * The Encoded Token will ONLY be produced upon last UNSEAL Key entered
 
 ```shell
 for i in {1..3}; do
@@ -278,7 +278,7 @@ ENCODED_TOKEN=$(cat /tmp/encoded.txt)
 echo ENCODED_TOKEN: $ENCODED_TOKEN
 ```
 
-4. Decode the generated DR operation token (Encoded Token)
+5. Decode the generated DR operation token (Encoded Token)
 
 ```shell
 DR_OPERATION_TOKEN=$(vault_secondary operator generate-root -dr-token -otp=${DR_OTP} -decode=${ENCODED_TOKEN})
@@ -290,13 +290,17 @@ If it returns anything else, repeat steps to generate it again
 
 ---
 
-## ==> CONFIGURE CLUSTER A AS SECONDARY TO CLUSTER B
-
 ### ==> Promote Vault secondary DR Cluster to PRIMARY
+
+Promote Cluster B using the DR operation token.
 
 ```shell
 vault_secondary write -f /sys/replication/dr/secondary/promote dr_operation_token="${DR_OPERATION_TOKEN}" primary_cluster_addr="${VAULT_SECONDARY_CLUSTER_ADDR}"
 ```
+
+### ==> VERIFY
+
+Run the following commands to verify replication status.
 
 ```shell
 echo "#==> Check status from Primary DR cluster with CLI"
@@ -305,9 +309,13 @@ echo "#==> Check status from Secondary DR cluster with API"
 curl -s $VAULT_SECONDARY_ADDR/v1/sys/replication/status | jq .data
 ```
 
-Cluster A should now be standby. Cluster B should now be active. Cluster A does not yet know that Cluster B should primary.
+Cluster A should now be standby. Cluster B should now be active.
+
+NOTE: Cluster A does not, yet, know that Cluster B should be its primary.
 
 ---
+
+## ==> CONFIGURE CLUSTER A AS SECONDARY TO CLUSTER B
 
 ### Step 4: Generate a secondary activation token (Server B)
 

@@ -38,6 +38,7 @@
     - vault
     - vault-init
     - vault-unseal
+    - vault-configure
 
 
 # - hosts: monitoring
