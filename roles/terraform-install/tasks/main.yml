@@ -81,8 +81,9 @@
 - name: Show Terraform Install install_output
   debug:
     msg: |
-      test 1
-      test 2
+      print(* test 1
+
+      test 2)
   tags:
     - output
 
