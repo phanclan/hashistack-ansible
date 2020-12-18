@@ -78,3 +78,13 @@
   debug:
     msg: "{{install_output}}"
 
+- name: Show Terraform Install install_output
+  debug:
+    msg: |
+      test 1
+      test 2
+  tags:
+    - output
+
+
+
