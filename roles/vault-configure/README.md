@@ -326,7 +326,7 @@ https://www.vaultproject.io/api/system/replication-dr.html#generate-dr-secondary
 echo "#==> From Cluster B - Generate a secondary activation token"
 # The token has changed after replication setup.
 vault_secondary () {
-  VAULT_ADDR=${VAULT_SECONDARY_ADDR} VAULT_TOKEN=$(cat /tmp/rootKey/hashi-a-1/rootKey) vault $@
+  VAULT_ADDR=${VAULT_SECONDARY_ADDR} VAULT_TOKEN=$(cat /tmp/rootKey/server-a-1/rootkey) vault $@
 }
 
 WRAPPING_TOKEN=$(vault_secondary write -format=json sys/replication/dr/primary/secondary-token id=cluster-a | jq -r '.wrap_info.token')

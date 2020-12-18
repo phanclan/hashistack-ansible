@@ -1,0 +1,80 @@
+# - name: Create Terraform file
+#   template:
+#     src: "hazelcast_jmx.json.j2"
+#     dest: "{{ logstash_directory_jmx_hazelcast }}/hazelcast_jmx_{{ item }}_{{ item.value.cluster }}.json"
+#     owner: "{{ logstash_system_user }}"
+#     group: "{{ logstash_system_group }}"
+#     mode: 0640
+#   with_dict:
+#     - "{{ groups['HAZELCAST'] }}"
+#     - logstash_hazelcast_jmx
+
+- name: Create Hashi directory - Data
+  # become: yes
+  file:
+    path: /tmp/{{ item }}
+    state: directory
+    # mode: 0777
+    # owner: "{{ item }}"
+    # group: "{{ item }}"
+  loop:
+    - terraform
+  tags:
+    - terraform
+
+
+- name: Create Terraform file - settings.json
+  template:
+    src: settings.json.j2
+    dest: /tmp/terraform/settings.json
+    # owner: root
+    # group: root
+  # notify: systemd_reload
+  tags:
+    - terraform
+
+- name: Create Terraform file - replicated.conf
+  become: yes
+  template:
+    src: replicated.conf.j2
+    dest: /etc/replicated.conf
+    # owner: root
+    # group: root
+  # notify: systemd_reload
+  tags:
+    - terraform
+
+- name: Copy file with owner and permissions
+  copy:
+    src: "{{item}}"
+    dest: "/tmp/terraform/{{item}}"
+  loop:
+    - license.rli
+    - uninstall.sh
+
+- name: Download installer
+  get_url:
+    url: https://install.terraform.io/ptfe/stable
+    dest: /tmp/terraform/install.sh
+
+- name: Install terraform
+  shell: |
+    cd /tmp/terraform
+    echo "Uninstall previous versions"
+    sudo ./uninstall.sh
+    echo "Install TFE"
+    sudo bash ./install.sh no-proxy \
+      private-address="{{ansible_facts['default_ipv4']['address']}}" \
+      public-address=\"{{ public_ip | default(ansible_facts['default_ipv4']['address']) }}\"
+    sudo usermod -aG docker $USER
+  environment:
+    # VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+    # VAULT_ADDR: "http://127.0.0.1:8200"
+  register: install_output
+  tags:
+    - terraform
+
+- name: Show Terraform Install install_output
+  debug:
+    msg: "{{install_output}}"
+

@@ -1,0 +1,9 @@
+---
+#==> Configure Vault
+- hosts: localhost
+  # become: yes
+  vars:
+    hostname: server-a-1.tfe # Replace with your hostname
+    # public_ip: "x.x.x.x" # Comment out if you don't have a public ip address
+  roles:
+    - terraform
