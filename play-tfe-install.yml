@@ -8,4 +8,4 @@
     # public_ip: "x.x.x.x" # Comment out if you don't have a public ip address
     tfe_admin_password: "tfeadmin123!"
   roles:
-    - terraform
+    - terraform-install
