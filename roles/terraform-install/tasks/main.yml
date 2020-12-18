@@ -80,10 +80,9 @@
 
 - name: Show Terraform Install install_output
   debug:
-    msg: |
-      print(* test 1
-
-      test 2)
+    msg:
+      - Terraform UI: https://{{ansible_facts['default_ipv4']['address']}}:8800
+      - Console Password: "{{tfe_admin_password}}"
   tags:
     - output
 
