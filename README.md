@@ -42,7 +42,7 @@ git clone https://github.com/phanclan/hashistack-ansible.git && \
 Example for instruqt.
 
 ```shell
-ansible-playbook -i hosts.instruqt play-hashi.yml --skip-tags home -e @vars-instruqt.yml
+ansible-playbook -i hosts.instruqt play-hashistack.yml --skip-tags home -e @vars-instruqt.yml
 ```
 
 - `vars-instruqt.yml` file specifies values specific for instruqt environment.

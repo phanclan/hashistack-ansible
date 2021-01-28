@@ -3,6 +3,7 @@ base_apps_list:
   - curl
   - wget
   - jq
+  - software-properties-common
   - tree
   - unzip
   # - dnsmasq-base

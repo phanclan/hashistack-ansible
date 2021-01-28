@@ -1,13 +1,14 @@
 ---
 #==> Configure Vault
-- hosts: hashi_west
-  become: yes
+- hosts: localhost # hashi_west
+  become: no
   vars:
     region_letter: a
     vault_backend: raft # file or raft
+    vault_token: s.1gepn9r5GnRZKLDD3JgMIa1Z # "{{ lookup('file', '/tmp/rootKey/{{inventory_hostname}}/rootkey')}}"
   roles:
-    - vault-destroy
-    - vault
-    - vault-init
-    - vault-unseal
+    # - vault-destroy
+    # - vault
+    # - vault-init
+    # - vault-unseal
     - vault-configure

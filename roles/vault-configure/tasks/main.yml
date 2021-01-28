@@ -1,6 +1,61 @@
 - name: Create vault batch token for DR Operations.
   become: no
   shell: |
+    set +x
+    export AZURE_CREDS_FILE=$HOME/.Azure/creds2.txt
+    export TF_VAR_subscription_id=14692f20-9428-451b-8298-102ed4e39c2a
+    export TF_VAR_tenant_id=$(jq -r .tenant $AZURE_CREDS_FILE)
+    export TF_VAR_client_secret=$(jq -r .password $AZURE_CREDS_FILE)
+    export TF_VAR_client_id=$(jq -r .appId $AZURE_CREDS_FILE)
+    echo "#==> Create some users, policies and secrets on the primary cluster."
+    cd roles/vault-configure/files/terraform/base_azure && \
+    terraform apply -auto-approve
+  register: tf_plan_out
+  environment:
+    VAULT_TOKEN: "{{vault_token}}" #"{{ lookup('file', '/tmp/rootKey/{{inventory_hostname}}/rootkey')}}"
+    VAULT_ADDR: "http://127.0.0.1:8200"
+  delegate_to: localhost
+  run_once: true
+  # tags:
+    # - vault-configure
+
+- name: Show Terraform plan
+  debug:
+    msg: "{{tf_plan_out.stdout_lines}}"
+  tags:
+    - vault-configure
+
+- name: Create packer image.
+  become: no
+  shell: |
+    set +x
+    export AZURE_CREDS_FILE=$HOME/.Azure/creds2.txt
+    export TF_VAR_subscription_id=14692f20-9428-451b-8298-102ed4e39c2a
+    export TF_VAR_tenant_id=$(jq -r .tenant $AZURE_CREDS_FILE)
+    export TF_VAR_client_secret=$(jq -r .password $AZURE_CREDS_FILE)
+    export TF_VAR_client_id=$(jq -r .appId $AZURE_CREDS_FILE)
+    echo "#==> Create packer image."
+    cd roles/packer && \
+    packer build -force -var-file variables.json ubuntu18-azure.json
+  register: packer_out
+  environment:
+    VAULT_TOKEN: "{{vault_token}}" #"{{ lookup('file', '/tmp/rootKey/{{inventory_hostname}}/rootkey')}}"
+    VAULT_ADDR: "http://127.0.0.1:8200"
+  delegate_to: localhost
+  run_once: true
+  tags:
+    - vault-configure
+
+
+- name: Show Terraform plan
+  debug:
+    msg: "{{packer_out.stdout_lines}}"
+  tags:
+    - vault-configure
+
+- name: Create vault batch token for DR Operations.
+  become: no
+  shell: |
     echo "#==> Create some users, policies and secrets on the primary cluster.
     These objects will be validated on the replicated clusters."
 
