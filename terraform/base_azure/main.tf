@@ -12,17 +12,17 @@ module "network" {
 }
 
 
-# module "azure_secrets_engine" {
-#   source = "../modules/azure_secrets_engine"
-#   client_secret = var.client_secret
-#   client_id = var.client_id
-#   common_tags = local.common_tags
-#   location = "westus2"
-#   rg_name = "${var.prefix}-jenkins"
-#   prefix = var.prefix
-#   subscription_id = var.subscription_id
-#   tenant_id = var.tenant_id
-# }
+module "azure_secrets_engine" {
+  source = "../modules/azure_secrets_engine"
+  client_secret = var.client_secret
+  client_id = var.client_id
+  common_tags = local.common_tags
+  location = "westus2"
+  rg_name = "${var.prefix}-jenkins"
+  prefix = var.prefix
+  subscription_id = var.subscription_id
+  tenant_id = var.tenant_id
+}
 
 # module "jenkins" {
 #   source = "../modules/jenkins_secure_introduction"
