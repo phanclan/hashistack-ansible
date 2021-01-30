@@ -1,0 +1,9 @@
+
+{
+  "myResourceGroup": "pphan-jenkins",
+  "myPackerImage": "jenkins-tf-ansible-vault",
+  "vm_size": "Standard_A2_v2",
+  "location": "West US 2",
+  "image_sku": "18.04-LTS"
+
+}

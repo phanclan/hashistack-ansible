@@ -5,23 +5,25 @@ module "vault_base" {
 
 #==> 2. Build Azure RG and Vault Secrets Engine
 module "network" {
-  source = "../modules/azure_network"
+  source      = "../modules/azure_network"
   common_tags = local.common_tags
-  prefix = var.prefix
-  rg_name = "${var.prefix}-jenkins"
+  prefix      = var.prefix
+  rg_name     = "${var.prefix}-jenkins"
 }
 
 
+#==> 3. Configure Azure Secrets Engine
 module "azure_secrets_engine" {
-  source = "../modules/azure_secrets_engine"
-  client_secret = var.client_secret
-  client_id = var.client_id
-  common_tags = local.common_tags
-  location = "westus2"
-  rg_name = "${var.prefix}-jenkins"
-  prefix = var.prefix
+  source          = "../modules/azure_secrets_engine"
+  depends_on      = [module.network]
+  client_secret   = var.client_secret
+  client_id       = var.client_id
+  common_tags     = local.common_tags
+  location        = "westus2"
+  rg_name         = "${var.prefix}-jenkins"
+  prefix          = var.prefix
   subscription_id = var.subscription_id
-  tenant_id = var.tenant_id
+  tenant_id       = var.tenant_id
 }
 
 # module "jenkins" {
