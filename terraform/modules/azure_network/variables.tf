@@ -15,7 +15,7 @@ variable "common_tags" {
 
 variable "location" {
   description = "The region where the virtual network is created."
-  default     = "centralus"
+  default     = "West US 2" #"centralus"
 }
 
 variable "address_space" {

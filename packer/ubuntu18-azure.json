@@ -38,7 +38,6 @@
       "apt-get update",
       "DEBIAN_FRONTEND=noninteractive apt-get install -qq python3-pip jq",
       "snap install docker",
-
       "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
     ],
     "inline_shebang": "/bin/sh -x",
