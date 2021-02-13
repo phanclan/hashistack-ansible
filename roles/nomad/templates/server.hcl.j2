@@ -3,12 +3,12 @@
 
 server {
   enabled          = true
-  bootstrap_expect = 3 # 3 for Production
+  bootstrap_expect = {{bootstrap_expect}} # 3 for Production
 
   job_gc_threshold = "2m"
   server_join {
-    # retry_join = ["server-a-1", "server-a-2", "server-a-3"]
-    retry_max = 3
-    retry_interval = "15s"
+    # retry_join = ["server-a-1", "server-a-2", "server-a-3"] # comment if consul/cloud
+    retry_max = 15  # Default 0, infinite retries
+    retry_interval = "3s"  # Default 30s
   }
 }

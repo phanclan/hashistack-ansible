@@ -31,4 +31,5 @@
   loop:
     - ubuntu
     - vagrant
+    - nomad
   tags: hashi

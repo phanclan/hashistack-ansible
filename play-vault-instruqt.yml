@@ -30,7 +30,8 @@
       #   vault server -dev -dev-root-token-id=root \
       #     -dev-listen-address=0.0.0.0:8200 2>&1 &
       environment:
-        VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+        # VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+        VAULT_TOKEN: "{{ lookup('file', '{{root_token_dir_output}}/{{inventory_hostname}}/rootkey')}}"
         VAULT_ADDR: "http://127.0.0.1:8200"
       when: vault_status.stdout != 'false' or vault_status.stdout == ""
       tags:

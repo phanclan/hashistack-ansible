@@ -8,3 +8,4 @@ nomad_config_path: "/etc/nomad.d/"
 os_interface: "ens4"
 prefix: server
 user: vagrant
+bootstrap_expect: 3
