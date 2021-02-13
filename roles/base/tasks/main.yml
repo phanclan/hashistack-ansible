@@ -70,18 +70,22 @@
 #   tags:
 #     - base
 
-# - name: Configure dnsmasq to forward .consul requests to consul port 8600 # not needed since using iptables for dns forwarding
-#   become: yes
-#   copy:
-#     dest: "/etc/dnsmasq.d/10-consul"
-#     content: |
-#       server=/consul/127.0.0.1#8600
-#       # Forward everything else to Google DNS
-#       server=127.0.0.53
-#       cache-size=0
-#   notify: dnsmasq_restart
-#   tags:
-#     - base
+#==> Configure dnsmasq. This resolves issues with docker containers not being
+#    able to resolve .consul domains.
+####
+
+- name: Configure dnsmasq to forward .consul requests to consul port 8600 # not needed since using iptables for dns forwarding
+  become: yes
+  copy:
+    dest: "/etc/dnsmasq.d/10-consul"
+    content: |
+      server=/consul/127.0.0.1#8600
+      # Forward everything else to Google DNS
+      server=127.0.0.53
+      cache-size=0
+  notify: dnsmasq_restart
+  tags:
+    - base
 
 # - name: Restart service dnsmasq, in all cases # not needed since using iptables for dns forwarding
 #   become: yes

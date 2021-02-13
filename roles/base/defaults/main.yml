@@ -7,7 +7,7 @@ base_apps_list:
   - tree
   - unzip
   # - dnsmasq-base
-  # - dnsmasq
+  - dnsmasq
   # - resolvconf
   - postgresql-client
 boundary_ver: "0.1.1"
