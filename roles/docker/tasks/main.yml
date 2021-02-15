@@ -1,5 +1,6 @@
 #==> DOCKER
 - name: Add Docker GPG apt Key
+  become: yes
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
@@ -12,6 +13,7 @@
 #   tags: hashi
 
 - name: Add Docker Repository
+  become: yes
   apt_repository:
     repo: deb https://download.docker.com/linux/ubuntu {{ansible_lsb.codename}} stable
     state: present
@@ -26,6 +28,7 @@
 #   tags: hashi
 
 - name: Add users to docker mod
+  become: yes
   user: name={{item}} groups=docker append=yes
   loop:
     - ubuntu
