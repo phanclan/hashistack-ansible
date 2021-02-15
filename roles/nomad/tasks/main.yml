@@ -1,12 +1,17 @@
-- name: Create nomad user
-  become: yes
-  user:
-    name="{{ item }}" system=yes shell="/sbin/nologin"
-    comment="nologin user" create_home="no" state=present
-  loop:
-    - "{{ nomad_user }}"
+- name: Include user angd group settings
+  include: user_group.yml
   tags:
     - nomad
+
+# - name: Create nomad user  # using user_group include instead.
+#   become: yes
+#   user:
+#     name="{{ item }}" system=yes shell="/sbin/nologin"
+#     comment="nologin user" create_home="no" state=present
+#   loop:
+#     - "{{ nomad_user }}"
+#   tags:
+#     - nomad
 
 - name: Create Hashi directory - Data
   become: yes

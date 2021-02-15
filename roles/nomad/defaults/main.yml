@@ -1,11 +1,29 @@
 ---
-nomad_version: "0.11.1"
-nomad_checksum: "sha256:eb8d2461d0ca249c1f91005f878795998bdeafccfde0b9bae82343541ce65996"
+nomad_debug: false
+
+### Package
+nomad_architecture_map:
+  amd64: amd64
+  x86_64: amd64
+  armv7l: arm
+  aarch64: arm64
+  32-bit: "386"
+  64-bit: amd64
+nomad_architecture: "{{ nomad_architecture_map[ansible_architecture] }}"
+nomad_version: "0.12.10"
+nomad_checksum: "sha256:19fb6f722d7c374269e4969e6277aaf7ba3ba20653c171b4ee8166950ca1a5ff"
 nomad_install_prerequisites: ['unzip']
-nomad_user: "nomad"
-nomad_group: "nomad"
 nomad_config_path: "/etc/nomad.d/"
+
+### System user and group
+nomad_manage_user: true
+nomad_user: "nomad"
+nomad_manage_group: false
+nomad_group: "nomad"
+
 os_interface: "ens4"
 prefix: server
 user: vagrant
+
+### Nomad settings
 bootstrap_expect: 3
