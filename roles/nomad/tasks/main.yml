@@ -150,6 +150,7 @@
     - home
 
 - name: HashiCups - Pull images
+  become: yes
   shell: |
     docker pull hashicorpdemoapp/product-api-db:v0.0.12
     docker pull hashicorpdemoapp/product-api:v0.0.12
@@ -161,6 +162,7 @@
     - hashicups
 
 - name: HashiCups - Pull HashiStackimages
+  become: yes
   shell: |
     docker pull hashicorp/vault-enterprise:latest
     docker pull hashicorp/consul-enterprise:latest
