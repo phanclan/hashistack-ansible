@@ -75,17 +75,18 @@
   tags:
     - base
 
-# - name: Base - Update /etc/resolv.conf via resolvconf # not needed since using iptables for dns forwarding
-#   become: yes
-#   # replace:
-#   #   path: /etc/resolv.conf
-#   #   regexp: "nameserver 127.0.0.*"
-#   #   replace: "nameserver 127.0.0.1"
-#   lineinfile:
-#     path: /etc/resolvconf/resolv.conf.d/head
-#     line: nameserver 127.0.0.1
-#   tags:
-#     - base
+- name: Base - Update /etc/resolv.conf via resolvconf # not needed since using iptables for dns forwarding
+  become: yes
+  replace:
+    path: /etc/resolv.conf
+    regexp: "nameserver 127.0.0.*"
+    replace: "nameserver 127.0.0.1"
+    backup: yes
+  # lineinfile:
+  #   path: /etc/resolvconf/resolv.conf.d/head
+  #   line: nameserver 127.0.0.1
+  tags:
+    - base
 
 - name: Disable and stop service # stopping resolved. conflicts with dnsmasq.
   become: yes
