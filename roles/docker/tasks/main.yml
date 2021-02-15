@@ -25,8 +25,7 @@
 #   command: usermod -aG docker {{docker_user}}
 #   tags: hashi
 
-- name: add user mod
-  # no need for sudo if using become
+- name: Add users to docker mod
   user: name={{item}} groups=docker append=yes
   loop:
     - ubuntu

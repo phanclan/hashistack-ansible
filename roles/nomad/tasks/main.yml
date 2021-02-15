@@ -127,6 +127,7 @@
     - nomad
 
 - name: Read license content
+  ignore_errors: yes
   become: no
   command: cat ./files/nomad.hclic
   register: nomad_license
@@ -137,6 +138,7 @@
     - home
 
 - name: License nomad
+  ignore_errors: yes
   shell: |
     echo {{ lookup('file', 'nomad.hclic')}} | nomad license put -
   run_once: true
