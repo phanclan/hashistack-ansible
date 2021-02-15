@@ -20,6 +20,7 @@
   tags: hashi
 
 - name: Update apt and install docker-ce
+  become: yes
   apt: update_cache=yes name=docker-ce state=latest
   tags: hashi
 # - name: add user mod
