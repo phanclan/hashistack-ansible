@@ -11,3 +11,8 @@ waypoint_ver: 0.2.1
 boundary_ver: 0.1.6
 unseal_keys_dir_output: "/tmp/unsealKey"
 root_token_dir_output: "/tmp/rootKey"
+host_file:
+  server-a-1:
+    ip: "192.168.64.23"
+  server-a-2:
+    ip: "192.168.64.24"
