@@ -1,3 +1,11 @@
+[all:vars]
+### Vagrant
+#ansible_port=2222
+#ansible_user=vagrant
+
+### Custom ssh key
+#ansible_ssh_private_key_file=~/.ssh/id_rsa
+
 [hashi_west]
 server-a-1
 server-a-2

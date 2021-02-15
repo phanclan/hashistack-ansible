@@ -113,6 +113,7 @@
     - consul
 
 - name: Consul - Read license content
+  ignore_errors: yes
   become: no
   command: cat ./files/consul.hclic
   register: consul_license
@@ -124,6 +125,7 @@
     - home
 
 - name: Consul - License consul
+  ignore_errors: yes
   shell: |
     echo {{ lookup('file', 'consul.hclic')}} | consul license put -
   run_once: true

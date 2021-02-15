@@ -1,4 +1,4 @@
-- name: Include user angd group settings
+- name: Include user and group settings
   include: user_group.yml
   tags:
     - nomad

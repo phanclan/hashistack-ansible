@@ -18,7 +18,7 @@ nomad_config_path: "/etc/nomad.d/"
 ### System user and group
 nomad_manage_user: true
 nomad_user: "nomad"
-nomad_manage_group: false
+nomad_manage_group: true
 nomad_group: "nomad"
 
 os_interface: "ens4"
