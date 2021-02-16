@@ -125,27 +125,43 @@
 
 #==> Configure dnsmasq - END
 
-- name: Consul - Read license content
-  ignore_errors: yes
-  become: no
-  command: cat ./files/consul.hclic
+- name: Read package checksum file
+  stat:
+    path: "{{ role_path }}/files/consul.hclic"
+  become: false
+  # vars:
+  #   ansible_become: false
+  run_once: true
   register: consul_license
-  # with_fileglob: ./licenses/consul.hclic
-  delegate_to: localhost
-  run_once: true
   tags:
+    - installation
     - consul-license
     - home
+  delegate_to: 127.0.0.1
 
-- name: Consul - License consul
-  ignore_errors: yes
-  shell: |
-    echo {{ lookup('file', 'consul.hclic')}} | consul license put -
-  run_once: true
-  environment:
-    # CONSUL_HTTP_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
-    # CONSUL_HTTP_ADDR: "http://127.0.0.1:8500"
-  tags:
-    - consul-license
-    - home
+- name: Consul License
+  block:
+    - name: Consul - Read license content
+      command: cat ./files/consul.hclic
+      register: consul_license
+      # with_fileglob: ./licenses/consul.hclic
+      delegate_to: localhost
+      run_once: true
+      # tags:
+      #   - consul-license
+      #   - home
+
+    - name: Consul - License consul
+      shell: |
+        echo {{ lookup('file', 'consul.hclic')}} | consul license put -
+      run_once: true
+      environment:
+        # CONSUL_HTTP_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
+        # CONSUL_HTTP_ADDR: "http://127.0.0.1:8500"
+    when: consul_license.stat.exists | bool
+    become: no
+    ignore_errors: yes
+    tags:
+      - consul-license
+      - home
 
