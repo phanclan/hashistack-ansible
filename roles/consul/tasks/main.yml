@@ -119,7 +119,7 @@
 - name: Configure dnsmasq.
   include_role:
     name: consul
-    tasks_from: dnsmasq
+    tasks_from: dnsmasq.yml
   when: consul_dnsmasq_enable | bool
 
 #==> Configure dnsmasq - END
