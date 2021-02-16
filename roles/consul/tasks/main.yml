@@ -159,7 +159,8 @@
         # CONSUL_HTTP_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
         # CONSUL_HTTP_ADDR: "http://127.0.0.1:8500"
 
-    when: consul_license.stat.exists | bool
+    when:
+      - consul_license.stat.exists | bool
     become: no
     ignore_errors: yes
     tags:
