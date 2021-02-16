@@ -29,14 +29,23 @@ prefix: server
 user: vagrant
 
 ### Nomad settings
+nomad_bootstrap_expect: 3
 nomad_disable_update_check: false
 nomad_datacenter: "West"
+nomad_iface: "{{ lookup('env','NOMAD_IFACE') | default(ansible_default_ipv4.interface, true) }}"
 nomad_leave_on_terminate: true # Default is false.
 nomad_leave_on_interrupt: false # Default is false.
 nomad_log_level: "INFO" # Default is INFO
 nomad_region: "West"
 nomad_syslog_enable: true # Default is false. Linux only
-bootstrap_expect: 3
+
+### Server Settings
+nomad_encrypt: ""
+nomad_num_schedulers: "{{ ansible_processor_vcpus }}" # Default is number of CPU cores
+nomad_node_gc_threshold: "24h"
+nomad_job_gc_interval: "2m" # Default 5m
+nomad_job_gc_threshold: "2m" # Default 4h
+nomad_eval_gc_threshold: "1h"
 
 ### Client Settings
 nomad_chroot_env: # False
@@ -48,7 +57,6 @@ nomad_chroot_env: # False
   "/run/resolvconf": "/run/resolvconf"
   "/sbin": "/sbin"
   "/usr": "/usr"
-
 nomad_gc_interval: "1m"
 nomad_gc_disk_usage_threshold: 80
 nomad_gc_inode_usage_threshold: 70
