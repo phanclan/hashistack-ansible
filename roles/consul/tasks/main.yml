@@ -112,6 +112,15 @@
   tags:
     - consul
 
+#==> Configure dnsmasq. This resolves issues with docker containers not being
+#    able to resolve .consul domains.
+####
+
+- include_tasks: dnsmasq.yml
+  when: consul_dnsmasq_enable | bool
+
+#==> Configure dnsmasq - END
+
 - name: Consul - Read license content
   ignore_errors: yes
   become: no
