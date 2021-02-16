@@ -39,6 +39,7 @@
   tags:
     - nomad
 
+### Nomad Client Customization - Begin
 - name: Create HashiCups directories for Demo
   become: yes
   file:
@@ -53,6 +54,9 @@
     - /opt/nomad/volumes/grafana
   tags:
     - nomad
+
+### Nomad Client Customization - End
+
 
 - name: Unzip and install hashi nomad
   become: yes
@@ -186,6 +190,7 @@
 #     - hashicups
 
 - name: Nomad - Git checkout
+  ignore_errors: yes
   become: yes
   git:
     repo: 'https://github.com/phanclan/nomad_jobs.git'

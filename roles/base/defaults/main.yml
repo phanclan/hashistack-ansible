@@ -10,6 +10,8 @@ base_apps_list:
   - dnsmasq
   # - resolvconf
   - postgresql-client
+  # - openjdk-8-jdk # included with Roger's packer image
+  # - openjdk-8-jre # included with Roger's packer image
 boundary_ver: "0.1.1"
 boundary_user: "boundary"
 boundary_group: "boundary"
