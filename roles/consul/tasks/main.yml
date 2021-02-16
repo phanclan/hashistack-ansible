@@ -139,6 +139,9 @@
     - home
   delegate_to: 127.0.0.1
 
+  debug:
+    msg: "{{ consul_license.stat }}"
+
 - name: Consul License
   block:
     - name: Consul - Read license content
