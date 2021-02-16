@@ -116,7 +116,10 @@
 #    able to resolve .consul domains.
 ####
 
-- include_tasks: dnsmasq.yml
+- name: Configure dnsmasq.
+  include_role:
+    name: consul
+    tasks_from: dnsmasq
   when: consul_dnsmasq_enable | bool
 
 #==> Configure dnsmasq - END
