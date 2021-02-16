@@ -4,8 +4,8 @@ os_interface: ens4 #enp0s2, Instruqt ens4, Vagrant enp0s8
 user: ubuntu
 arch: amd64 # arm64, amd64
 #==> Common
-nomad_ver: 1.0.3
 consul_ver: 1.9.3
+nomad_ver: 1.0.3
 vault_ver: 1.6.2
 waypoint_ver: 0.2.1
 boundary_ver: 0.1.6

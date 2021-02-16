@@ -115,6 +115,8 @@
     path: /etc/nomad.d/common.hcl
     regexp: 'CHANGENIC'
     replace: "{{ os_interface }}"
+  tags:
+    - nomad
 
 - name: Enable and start nomad service
   become: yes
@@ -161,7 +163,7 @@
     - nomad
     - hashicups
 
-- name: HashiCups - Pull HashiStackimages
+- name: HashiCups - Pull HashiStack images
   become: yes
   shell: |
     docker pull hashicorp/vault-enterprise:latest

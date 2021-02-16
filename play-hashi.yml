@@ -3,19 +3,13 @@
   vars:
     region_letter: a
     os_interface: ens4 #enp0s2
-    nomad_ver: 1.0.0-beta2
-    consul_ver: 1.8.5
-    waypoint_ver: 0.1.4
-    boundary_ver: 0.1.1
+    # See vars-instruqt.yml for common variables.
     arch: amd64 # arm64, amd64
-    unseal_keys_dir_output: "/tmp/unsealKey"
-    root_token_dir_output: "/tmp/rootKey"
   roles:
     - base
     - consul
     - docker
     - nomad
-    # - emerging
 
 # - hosts: vaultservers
 #   vars:
