@@ -139,7 +139,7 @@
     - home
   delegate_to: 127.0.0.1
 
-  debug:
+- debug:
     msg: "{{ consul_license.stat }}"
 
 - name: Consul License
