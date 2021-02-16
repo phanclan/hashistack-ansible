@@ -132,7 +132,7 @@
   # vars:
   #   ansible_become: false
   run_once: true
-  register: consul_license
+  register: consul_license_file
   tags:
     - installation
     - consul-license
@@ -163,7 +163,7 @@
         # CONSUL_HTTP_ADDR: "http://127.0.0.1:8500"
 
   when:
-    - consul_license.stat.exists | bool
+    - consul_license_file.stat.exists | bool
   become: no
   ignore_errors: yes
   tags:
