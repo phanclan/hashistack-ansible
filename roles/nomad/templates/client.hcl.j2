@@ -28,17 +28,6 @@ client {
     disk = {{ nomad_reserved['disk'] }}
   }
 
-  # chroot_env {
-  #   "/bin"            = "/bin"
-  #   "/etc"            = "/etc"
-  #   "/lib"            = "/lib"
-  #   "/lib32"          = "/lib32"
-  #   "/lib64"          = "/lib64"
-  #   "/run/resolvconf" = "/run/resolvconf"
-  #   "/sbin"           = "/sbin"
-  #   "/usr"            = "/usr"
-  # }
-
   {% if nomad_chroot_env != False -%}
   chroot_env = {
   {% for key, value in nomad_chroot_env.items() %}

@@ -1,10 +1,7 @@
 ---
 - hosts: vaultservers
   vars:
-    vault_ver: 1.5.5
     arch: amd64 # arm64, amd64
-    unseal_keys_dir_output: "/tmp/unsealKey"
-    root_token_dir_output: "/tmp/rootKey"
   roles:
     - vault
     - vault-init

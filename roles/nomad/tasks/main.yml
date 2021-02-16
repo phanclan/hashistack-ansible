@@ -186,9 +186,10 @@
 #     - hashicups
 
 - name: Nomad - Git checkout
+  become: yes
   git:
     repo: 'https://github.com/phanclan/nomad_jobs.git'
-    dest: /tmp/nomad_jobs
+    dest: /root/nomad_jobs
     # version:
   run_once: true
   delegate_to: "{{prefix}}-a-1"

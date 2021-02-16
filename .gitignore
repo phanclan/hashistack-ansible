@@ -4,6 +4,8 @@
 **/.terraform/*
 # Misc files
 *.zip
+.DS_Store
+.vscode
 
 # .tfstate files
 *.tfstate
