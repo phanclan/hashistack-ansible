@@ -125,7 +125,7 @@
 
 #==> Configure dnsmasq - END
 
-- name: Read package checksum file
+- name: Check for license file
   stat:
     path: "{{ role_path }}/files/consul.hclic"
   become: false
