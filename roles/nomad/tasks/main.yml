@@ -132,28 +132,25 @@
   tags:
     - nomad
 
-- name: Read license content
-  ignore_errors: yes
-  become: no
-  command: cat ./files/nomad.hclic
-  register: nomad_license
-  # with_fileglob: ./licenses/nomad.hclic
-  delegate_to: localhost
-  tags:
-    - nomad-license
-    - home
+### Install License
 
-- name: License nomad
-  ignore_errors: yes
-  shell: |
-    echo {{ lookup('file', 'nomad.hclic')}} | nomad license put -
+- name: Check for license file
+  stat:
+    path: "{{ role_path }}/files/nomad.hclic"
+  become: false
   run_once: true
-  environment:
-    # VAULT_TOKEN: "{{ lookup('file', '/tmp/rootKey/rootkey')}}"
-    # VAULT_ADDR: "http://127.0.0.1:8200"
+  register: nomad_license_file
   tags:
-    - nomad-license
-    - home
+    - installation
+    - nomad_license
+  delegate_to: 127.0.0.1
+
+- name: Install license.
+  include_tasks: install_license.yml
+  when:
+    - nomad_license_file.stat.exists | bool
+
+### Install License - End
 
 - name: HashiCups - Pull images
   become: yes
@@ -203,7 +200,7 @@
 
 - name: Nomad - DAS - Start prometheus and auto-scaler
   shell: |
-    cd /tmp/nomad_jobs/hashicups
+    cd /root/nomad_jobs/hashicups
     nomad job run as-das-autoscaler.nomad
     nomad job run as-prometheus.nomad
   run_once: true
