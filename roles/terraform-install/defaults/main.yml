@@ -1,8 +1,0 @@
-disk_path: /var/lib/docker
-capacity_concurrency: 20
-capacity_memory: 1536
-enc_password: OneIsGeneratedButYouShouldSpecifyYourOwn
-installation_type: production
-production_type: disk
-# public_ip:
-tfe_admin_password: "tfeadmin123!"

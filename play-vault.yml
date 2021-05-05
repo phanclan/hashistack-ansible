@@ -1,8 +1,0 @@
----
-- hosts: vaultservers
-  vars:
-    arch: amd64 # arm64, amd64
-  roles:
-    - vault
-    - vault-init
-    - vault-unseal

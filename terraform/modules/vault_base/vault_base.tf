@@ -41,3 +41,7 @@ resource "vault_generic_secret" "developer_sample_data" {
 }
 EOT
 }
+
+output "mount_accessor" {
+    value = vault_auth_backend.example.accessor
+}

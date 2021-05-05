@@ -1,0 +1,8 @@
+{
+  "myResourceGroup": "pphan-workshop",
+  "myPackerImage": "hashistack-{{isotime \"2006-01-02\"}}",
+  "myPackerImage2": "jenkins-tf-ansible-vault",
+  "vm_size": "Standard_D2_v4",
+  "location": "West US 2",
+  "image_sku": "18.04-LTS"
+}

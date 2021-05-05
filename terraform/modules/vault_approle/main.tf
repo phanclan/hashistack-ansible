@@ -24,8 +24,8 @@ resource "vault_auth_backend" "backend" {
 resource "vault_approle_auth_backend_role" "role" {
   backend            = vault_auth_backend.backend.path
   role_name          = "${var.role_prefix}_approle"
-  secret_id_num_uses = var.secret_id_num_uses # 0 means unlimited
   token_policies     = var.token_policies
+  secret_id_num_uses = var.secret_id_num_uses # 0 means unlimited
   secret_id_ttl      = var.secret_id_ttl
   token_ttl          = var.token_ttl
 }
